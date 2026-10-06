@@ -219,16 +219,49 @@ UML   & \textit{Unified Modeling Language} \\
 \chapter{Introdução}
 \label{cap:introducao}
 
-O eletrocardiograma (ECG) é um exame utilizado para registrar a atividade elétrica do coração por meio de sensores posicionados sobre o corpo. A partir desse registro, é possível observar características relacionadas ao ritmo cardíaco e identificar possíveis alterações. Entre essas alterações está a fibrilação atrial (FA), uma arritmia caracterizada por uma atividade elétrica atrial desorganizada, que pode apresentar padrões específicos no sinal de ECG. Por esse motivo, a análise automatizada desses sinais tem sido estudada como uma aplicação relevante de técnicas computacionais.
+O eletrocardiograma (ECG) é um exame utilizado para registrar a atividade elétrica do
+coração por meio de sensores posicionados sobre o corpo \cite{VanGelder2024}. A partir desse
+registro, é possível observar características relacionadas ao ritmo cardíaco e identificar
+possíveis alterações. Entre essas alterações está a fibrilação atrial (FA), uma arritmia
+caracterizada por atividade elétrica atrial desorganizada \cite{VanGelder2024}. Por esse
+motivo, a análise automatizada desses sinais tem sido estudada como uma aplicação de
+técnicas de aprendizado de máquina e aprendizado profundo \cite{Efe2024,Almousa2023}.
 
-Com o avanço do aprendizado de máquina e, principalmente, do aprendizado profundo, diferentes arquiteturas de redes neurais passaram a ser utilizadas para analisar sinais de ECG. As Redes Neurais Convolucionais (CNN) podem identificar padrões locais presentes no sinal, enquanto as Redes Neurais Recorrentes (RNN) são capazes de representar informações relacionadas à sequência temporal. Outra abordagem é a utilização de redes Long Short-Term Memory Bidirecionais (BiLSTM), que permitem analisar informações temporais considerando diferentes direções da sequência.
+Com o avanço do aprendizado de máquina e, principalmente, do
+aprendizado profundo, diferentes arquiteturas de redes neurais
+passaram a ser utilizadas para analisar sinais de ECG. As Redes
+Neurais Convolucionais (CNN) podem identificar padrões locais
+presentes no sinal, enquanto as Redes Neurais Recorrentes (RNN)
+são capazes de representar informações relacionadas à sequência
+temporal. Outra abordagem é a utilização de redes Long
+Short-Term Memory Bidirecionais (BiLSTM), que permitem analisar
+informações temporais considerando diferentes direções da
+sequência.
 
-Um dos desafios encontrados na classificação de ECG está relacionado ao desequilíbrio entre as classes. No conjunto de dados utilizado pelo PhysioNet/CinC Challenge 2017, por exemplo, existem 8.528 registros de ECG de uma derivação, sendo 5.154 classificados como ritmo normal e 771 como fibrilação atrial. Os registros possuem frequência de amostragem de 300 Hz e duração variável.
+Um dos desafios encontrados na classificação de ECG está
+relacionado ao desequilíbrio entre as classes. No conjunto de
+dados utilizado pelo PhysioNet/CinC Challenge 2017, por exemplo,
+existem 8.528 registros de ECG de uma derivação, sendo 5.154
+classificados como ritmo normal e 771 como fibrilação atrial.
+Os registros possuem frequência de amostragem de 300 Hz e
+duração variável \cite{Clifford2017}.
 
-Nesse cenário, além da escolha da arquitetura, a função utilizada durante o treinamento também pode influenciar o comportamento do modelo. A Cross-Entropy é uma função de perda amplamente utilizada em problemas de classificação, enquanto a Focal Loss foi proposta para dar maior importância aos exemplos mais difíceis durante o treinamento. Assim, a comparação entre essas funções pode ajudar a compreender seus efeitos em diferentes arquiteturas de classificação de ECG.
+Nesse cenário, além da escolha da arquitetura, a função utilizada
+durante o treinamento também pode influenciar o comportamento
+do modelo. A Cross-Entropy é uma função de perda amplamente
+utilizada em problemas de classificação, enquanto a Focal Loss
+foi proposta para dar maior importância aos exemplos mais
+difíceis durante o treinamento. Assim, a comparação
+entre essas funções pode ajudar a compreender seus efeitos em
+diferentes arquiteturas de classificação de ECG
+\cite{Efe2024}.
 
-Dessa forma, este trabalho propõe uma comparação experimental entre as arquiteturas CNN-RNN e BiLSTM, considerando as funções de perda Cross-Entropy e Focal Loss. O estudo será realizado sobre a classificação binária entre ritmo normal e fibrilação atrial, buscando analisar tanto o desempenho dos modelos quanto seu custo computacional.
-
+Dessa forma, este trabalho propõe uma comparação experimental
+entre as arquiteturas CNN-RNN e BiLSTM, considerando as funções
+de perda Cross-Entropy e Focal Loss. O estudo será realizado
+sobre a classificação binária entre ritmo normal e fibrilação
+atrial, buscando analisar tanto o desempenho dos modelos quanto
+seu custo computacional.
 %\vspace{0.3cm}
 %\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
 %\textbf{Orientação sobre a linguagem da introdução}
@@ -249,12 +282,30 @@ Dessa forma, este trabalho propõe uma comparação experimental entre as arquit
 \section{Contexto}
 \label{sec:contexto}
 
-A classificação automática de fibrilação atrial a partir de sinais de ECG apresenta um problema relevante para a área de Computação, pois envolve o processamento de séries temporais, extração de padrões e classificação de dados. O próprio PhysioNet/CinC Challenge 2017 foi desenvolvido para estimular a criação de algoritmos capazes de classificar registros curtos de ECG em diferentes categorias, incluindo ritmo normal e fibrilação atrial.
+A classificação automática de fibrilação atrial a partir de sinais de ECG
+apresenta um problema relevante para a área de Computação, pois envolve
+o processamento de séries temporais, a identificação de padrões e a
+classificação de dados. O próprio PhysioNet/CinC Challenge 2017 foi
+desenvolvido para estimular a criação de algoritmos capazes de classificar
+registros curtos de ECG em diferentes categorias, incluindo ritmo normal
+e fibrilação atrial \cite{Clifford2017}.
 
-Além da variedade dos sinais, o desequilíbrio entre as classes pode dificultar o treinamento de modelos de aprendizado profundo. No conjunto de treinamento do desafio, a quantidade de registros de FA é consideravelmente menor que a quantidade de registros de ritmo normal, o que torna importante avaliar o desempenho dos modelos por diferentes métricas, e não apenas pela acurácia.
+Além da variedade dos sinais, o desequilíbrio entre as classes pode
+dificultar o treinamento de modelos de aprendizado profundo. No conjunto
+de treinamento do desafio, a quantidade de registros de fibrilação atrial
+é consideravelmente menor que a quantidade de registros de ritmo normal
+\cite{Clifford2017}. Por esse motivo, torna-se importante avaliar o
+desempenho dos modelos por meio de diferentes métricas, e não apenas
+pela acurácia.
 
-Nesse contexto, diferentes arquiteturas de aprendizado profundo podem apresentar comportamentos distintos ao lidar com as características temporais dos sinais. Da mesma forma, a função de perda utilizada no treinamento pode alterar a influência dos exemplos mais fáceis e difíceis sobre o aprendizado. Portanto, comparar arquiteturas e funções de perda sob condições experimentais controladas constitui uma forma de investigar quais fatores realmente contribuem para o desempenho da classificação.
-
+Nesse contexto, diferentes arquiteturas de aprendizado profundo podem
+apresentar comportamentos distintos ao lidar com as características
+temporais dos sinais. Da mesma forma, a função de perda utilizada no
+treinamento pode alterar a influência dos exemplos mais fáceis e difíceis
+sobre o aprendizado \cite{Efe2024}. Portanto, comparar arquiteturas e
+funções de perda sob condições experimentais controladas constitui uma
+forma de investigar quais fatores contribuem para o desempenho da
+classificação.
 
 %\vspace{0.3cm}
 %\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
@@ -293,13 +344,31 @@ Nesse contexto, diferentes arquiteturas de aprendizado profundo podem apresentar
 % ---------------------------------------------------------------
 \section{Justificativa}
 \label{sec:justificativa}
+A justificativa acadêmica deste estudo está relacionada à necessidade de
+comparar diferentes abordagens de aprendizado profundo aplicadas à
+classificação de sinais de ECG. Para isso, será realizado um experimento
+fatorial 2 $\times$ 2, comparando as arquiteturas CNN-RNN e BiLSTM
+combinadas às funções de perda Cross-Entropy e Focal Loss. Essa comparação
+permitirá analisar o efeito da arquitetura e da função de perda sobre o
+desempenho dos modelos, utilizando métricas como Accuracy, Precision,
+Recall, Specificity e F1-score.
 
-A justificativa acadêmica deste estudo fundamenta-se na necessidade de realizar um isolamento experimental rigoroso no processamento de sinais de ECG. Em vez de avaliar apenas uma topologia isolada, a pesquisa estrutura um experimento fatorial $2 \times 2$ comparando as arquiteturas CNN-RNN e BiLSTM combinadas às funções de perda Cross-Entropy e Focal Loss. Essa abordagem permite analisar isoladamente o efeito da topologia da rede, o impacto da função de otimização na atenuação do desequilíbrio de classes e a inter-relação entre esses fatores, empregando métricas robustas à assimetria dos dados (Accuracy, Precision, Recall, Specificity e F1-score).
+Do ponto de vista prático e profissional, o trabalho busca analisar não
+apenas o desempenho dos modelos na classificação entre ritmo normal e
+fibrilação atrial, mas também seu custo computacional. Para isso, serão
+considerados fatores como tempo de treinamento, tempo de inferência e
+número de parâmetros. Dessa forma, será possível comparar o desempenho
+dos modelos considerando tanto sua capacidade de classificação quanto
+os recursos computacionais necessários para sua execução.
 
-Sob a perspectiva prática e profissional, o trabalho fornece diretrizes concretas para o desenvolvimento de sistemas computacionais aplicados à triagem biomédica. Ao correlacionar a assertividade preditiva na identificação da Fibrilação Atrial com indicadores de eficiência computacional — como tempo de treinamento, latência de inferência e número de parâmetros —, o estudo identifica o ponto de equilíbrio ideal entre precisão diagnóstica e demanda computacional. Essa análise é essencial para orientar a escolha e o embarque de modelos de aprendizado profundo em dispositivos de monitoramento contínuo em tempo real com restrição de hardware.
-
-Por fim, a lacuna identificada na literatura reside na carência de comparações diretamente pareadas. Embora estudos prévios empreguem CNN, BiLSTM e Focal Loss, as pesquisas frequentemente introduzem variações simultâneas no pré-processamento, na divisão dos dados, nos hiperparâmetros ou no uso de mecanismos de atenção adicionais, impedindo atribuir os ganhos de desempenho exclusivamente à função de perda ou à arquitetura. O presente trabalho preenche essa lacuna ao manter rigorosamente padronizadas todas as condições experimentais, isolando de forma transparente o impacto real da arquitetura e da função de otimização no diagnóstico da Fibrilação Atrial.
-% ---------------------------------------------------------------
+Por fim, estudos anteriores apresentam diferentes combinações de
+arquiteturas, funções de perda e técnicas de processamento para a
+classificação de ECG \cite{Efe2024,Almousa2023,Albarrak2025}. Nesse
+contexto, este trabalho busca realizar uma comparação sob condições
+experimentais controladas, mantendo os mesmos dados, pré-processamento
+e condições de treinamento para os diferentes modelos. Com isso,
+pretende-se identificar as diferenças de desempenho entre as arquiteturas
+CNN-RNN e BiLSTM e entre as funções de perda Cross-Entropy e Focal Loss.% ---------------------------------------------------------------
 \section{Objetivo}
 \label{sec:objetivo}
 
