@@ -219,107 +219,109 @@ UML   & \textit{Unified Modeling Language} \\
 \chapter{Introdução}
 \label{cap:introducao}
 
-A introdução deve apresentar o tema do trabalho de forma clara, objetiva e \textbf{acessível}, situando \emph{qualquer} leitor --- inclusive quem não é da área de Computação --- no contexto da pesquisa. Comece com uma linguagem simples, compreensível por um público amplo, e só então conduza o leitor, de forma gradual, até o problema técnico específico. Neste capítulo, são apresentados o contexto no qual o problema se insere, a justificativa para a realização do estudo e os objetivos que norteiam o desenvolvimento do trabalho.
+O eletrocardiograma (ECG) é um exame utilizado para registrar a atividade elétrica do coração por meio de sensores posicionados sobre o corpo. A partir desse registro, é possível observar características relacionadas ao ritmo cardíaco e identificar possíveis alterações. Entre essas alterações está a fibrilação atrial (FA), uma arritmia caracterizada por uma atividade elétrica atrial desorganizada, que pode apresentar padrões específicos no sinal de ECG. Por esse motivo, a análise automatizada desses sinais tem sido estudada como uma aplicação relevante de técnicas computacionais.
 
-\vspace{0.3cm}
-\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
-\textbf{Orientação sobre a linguagem da introdução}
+Com o avanço do aprendizado de máquina e, principalmente, do aprendizado profundo, diferentes arquiteturas de redes neurais passaram a ser utilizadas para analisar sinais de ECG. As Redes Neurais Convolucionais (CNN) podem identificar padrões locais presentes no sinal, enquanto as Redes Neurais Recorrentes (RNN) são capazes de representar informações relacionadas à sequência temporal. Outra abordagem é a utilização de redes Long Short-Term Memory Bidirecionais (BiLSTM), que permitem analisar informações temporais considerando diferentes direções da sequência.
 
-\vspace{0.2cm}
-Escreva a \textbf{abertura} da introdução pensando em um \textbf{público amplo}, e não apenas na banca ou em especialistas. Um bom teste: alguém de outra área --- um colega de outro curso ou um familiar --- deveria entender, já nas primeiras linhas, qual é o assunto e por que ele importa.
+Um dos desafios encontrados na classificação de ECG está relacionado ao desequilíbrio entre as classes. No conjunto de dados utilizado pelo PhysioNet/CinC Challenge 2017, por exemplo, existem 8.528 registros de ECG de uma derivação, sendo 5.154 classificados como ritmo normal e 771 como fibrilação atrial. Os registros possuem frequência de amostragem de 300 Hz e duração variável.
 
-\vspace{0.2cm}
-\begin{itemize}
-    \item \textbf{Do geral para o específico (técnica do ``funil'')}: parta do cenário cotidiano e vá afunilando, parágrafo a parágrafo, até o problema técnico que será investigado.
-    \item \textbf{Evite jargão e siglas logo de início}; quando um termo técnico for inevitável, explique-o de forma simples na primeira vez em que aparecer.
-    \item \textbf{Use exemplos concretos ou analogias} do dia a dia para tornar o tema palpável ao leitor leigo.
-    \item \textbf{Reserve o aprofundamento técnico} para o Referencial Bibliográfico e o Desenvolvimento --- a introdução prepara o terreno, não esgota o assunto.
-\end{itemize}
-}}
+Nesse cenário, além da escolha da arquitetura, a função utilizada durante o treinamento também pode influenciar o comportamento do modelo. A Cross-Entropy é uma função de perda amplamente utilizada em problemas de classificação, enquanto a Focal Loss foi proposta para dar maior importância aos exemplos mais difíceis durante o treinamento. Assim, a comparação entre essas funções pode ajudar a compreender seus efeitos em diferentes arquiteturas de classificação de ECG.
+
+Dessa forma, este trabalho propõe uma comparação experimental entre as arquiteturas CNN-RNN e BiLSTM, considerando as funções de perda Cross-Entropy e Focal Loss. O estudo será realizado sobre a classificação binária entre ritmo normal e fibrilação atrial, buscando analisar tanto o desempenho dos modelos quanto seu custo computacional.
+
+%\vspace{0.3cm}
+%\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+%\textbf{Orientação sobre a linguagem da introdução}
+
+%\vspace{0.2cm}
+%Escreva a \textbf{abertura} da introdução pensando em um \textbf{público amplo}, e não apenas na banca ou em especialistas. Um bom teste: alguém de outra área --- um colega de outro curso ou um familiar --- deveria entender, já nas primeiras linhas, qual é o assunto e por que ele importa.
+
+%\vspace{0.2cm}
+%\begin{itemize}
+  %  \item \textbf{Do geral para o específico (técnica do ``funil'')}: parta do cenário cotidiano e vá afunilando, parágrafo a parágrafo, até o problema técnico que será investigado.
+  %  \item \textbf{Evite jargão e siglas logo de início}; quando um termo técnico for inevitável, explique-o de forma simples na primeira vez em que aparecer.
+ %   \item \textbf{Use exemplos concretos ou analogias} do dia a dia para tornar o tema palpável ao leitor leigo.
+ %   \item \textbf{Reserve o aprofundamento técnico} para o Referencial Bibliográfico e o Desenvolvimento --- a introdução prepara o terreno, não esgota o assunto.
+%\end{itemize}
+%}}
 
 % ---------------------------------------------------------------
 \section{Contexto}
 \label{sec:contexto}
 
-Apresente o cenário que originou o problema, ressaltando fatos, indicadores e lacunas identificadas na área de estudo. O contexto deve situar o leitor sobre o estado atual do tema, mostrando a relevância do assunto para a Computação e para a sociedade.
+A classificação automática de fibrilação atrial a partir de sinais de ECG apresenta um problema relevante para a área de Computação, pois envolve o processamento de séries temporais, extração de padrões e classificação de dados. O próprio PhysioNet/CinC Challenge 2017 foi desenvolvido para estimular a criação de algoritmos capazes de classificar registros curtos de ECG em diferentes categorias, incluindo ritmo normal e fibrilação atrial.
 
-Descreva o ambiente ou domínio em que o problema ocorre, utilizando dados e referências que comprovem a existência do problema. Explique quem são os principais afetados e quais são as consequências de não resolvê-lo.
+Além da variedade dos sinais, o desequilíbrio entre as classes pode dificultar o treinamento de modelos de aprendizado profundo. No conjunto de treinamento do desafio, a quantidade de registros de FA é consideravelmente menor que a quantidade de registros de ritmo normal, o que torna importante avaliar o desempenho dos modelos por diferentes métricas, e não apenas pela acurácia.
 
-\vspace{0.3cm}
-\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
-\textbf{Orientação sobre citações (ABNT NBR 10520:2023)}
+Nesse contexto, diferentes arquiteturas de aprendizado profundo podem apresentar comportamentos distintos ao lidar com as características temporais dos sinais. Da mesma forma, a função de perda utilizada no treinamento pode alterar a influência dos exemplos mais fáceis e difíceis sobre o aprendizado. Portanto, comparar arquiteturas e funções de perda sob condições experimentais controladas constitui uma forma de investigar quais fatores realmente contribuem para o desempenho da classificação.
 
-\vspace{0.2cm}
-O aluno deve \textbf{priorizar citações indiretas} (paráfrases), nas quais a ideia do autor é reescrita com as próprias palavras. Citações diretas (transcrições literais) \textbf{não são recomendadas}, exceto quando o texto original for insubstituível --- por exemplo, definições consagradas, leis, normas técnicas ou trechos cuja reformulação alteraria o sentido.
 
-\vspace{0.2cm}
-\textbf{Citação indireta} (recomendada) --- o autor interpreta e reescreve a ideia:
+%\vspace{0.3cm}
+%\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+%\textbf{Orientação sobre citações (ABNT NBR 10520:2023)}
 
-\vspace{0.1cm}
-\textit{Exemplo 1 --- sistema autor-data entre parênteses:}\\
-A definição clara do problema é considerada um fator determinante para o sucesso de qualquer pesquisa na área de Computação \cite{Wazlawick2020}.
+%\vspace{0.2cm}
+%O aluno deve \textbf{priorizar citações indiretas} (paráfrases), nas quais a ideia do autor é reescrita com as próprias palavras. Citações diretas (transcrições literais) \textbf{não são recomendadas}, exceto quando o texto original for insubstituível --- por exemplo, definições consagradas, leis, normas técnicas ou trechos cuja reformulação alteraria o sentido.
 
-\vspace{0.1cm}
-\textit{Exemplo 2 --- autor como parte do texto:}\\
-Para \citeonline{Pressman2016}, a escolha de uma metodologia adequada impacta diretamente na qualidade dos resultados obtidos em projetos de software.
+%\vspace{0.2cm}
+%\textbf{Citação indireta} (recomendada) --- o autor interpreta e reescreve a ideia:
 
-\vspace{0.2cm}
-\textbf{Citação direta curta} (até 3 linhas, apenas quando indispensável) --- entre aspas, com indicação de página:
+%\vspace{0.1cm}
+%\textit{Exemplo 1 --- sistema autor-data entre parênteses:}\\
+%A definição clara do problema é considerada um fator determinante para o sucesso de qualquer pesquisa na área de Computação \cite{Wazlawick2020}.
 
-\vspace{0.1cm}
-Segundo \citeonline[p.~42]{Wazlawick2020}, ``a formulação do problema deve ser expressa de forma clara, objetiva e delimitada, evitando ambiguidades que possam comprometer o escopo da pesquisa''.
+%\vspace{0.1cm}
+%\textit{Exemplo 2 --- autor como parte do texto:}\\
+%Para \citeonline{Pressman2016}, a escolha de uma metodologia adequada impacta diretamente na qualidade dos resultados obtidos em projetos de software.
 
-\vspace{0.2cm}
-\textbf{Citação direta longa} (mais de 3 linhas, apenas quando indispensável) --- recuo de 4\,cm, fonte menor, sem aspas:
+%\vspace{0.2cm}
+%\textbf{Citação direta curta} (até 3 linhas, apenas quando indispensável) --- entre aspas, com indicação de página:
 
-\begin{citacao}
-A revisão bibliográfica não consiste em simplesmente listar os trabalhos encontrados, mas em analisá-los criticamente, identificando convergências, divergências e lacunas que justifiquem a realização de uma nova pesquisa \cite[p.~87]{Wazlawick2020}.
-\end{citacao}
+%\vspace{0.1cm}
+%Segundo \citeonline[p.~42]{Wazlawick2020}, ``a formulação do problema deve ser expressa de forma clara, objetiva e delimitada, evitando ambiguidades que possam comprometer o escopo da pesquisa''.
 
-\textbf{Resumo}: use citações indiretas como regra. Reserve a citação direta para casos excepcionais em que a transcrição literal seja realmente necessária.
-}}
+%\vspace{0.2cm}
+%\textbf{Citação direta longa} (mais de 3 linhas, apenas quando indispensável) --- recuo de 4\,cm, fonte menor, sem aspas:
+
+%\begin{citacao}
+%A revisão bibliográfica não consiste em simplesmente listar os trabalhos encontrados, mas em analisá-los criticamente, identificando convergências, divergências e lacunas que justifiquem a realização de uma nova pesquisa \cite[p.~87]{Wazlawick2020}.
+%\end{citacao}
+
+%\textbf{Resumo}: use citações indiretas como regra. Reserve a citação direta para casos excepcionais em que a transcrição literal seja realmente necessária.
+%}}
 
 % ---------------------------------------------------------------
 \section{Justificativa}
 \label{sec:justificativa}
 
-Explicite por que resolver esse problema é importante. A justificativa deve abordar:
+A justificativa acadêmica deste estudo fundamenta-se na necessidade de realizar um isolamento experimental rigoroso no processamento de sinais de ECG. Em vez de avaliar apenas uma topologia isolada, a pesquisa estrutura um experimento fatorial $2 \times 2$ comparando as arquiteturas CNN-RNN e BiLSTM combinadas às funções de perda Cross-Entropy e Focal Loss. Essa abordagem permite analisar isoladamente o efeito da topologia da rede, o impacto da função de otimização na atenuação do desequilíbrio de classes e a inter-relação entre esses fatores, empregando métricas robustas à assimetria dos dados (Accuracy, Precision, Recall, Specificity e F1-score).
 
-\begin{itemize}
-    \item \textbf{Relevância acadêmica}: como este trabalho contribui para o avanço do conhecimento na área;
-    \item \textbf{Relevância prática/profissional}: quais benefícios práticos a solução trará para usuários, organizações ou a sociedade;
-    \item \textbf{Lacuna identificada}: o que ainda não foi resolvido ou explorado suficientemente pelos trabalhos existentes.
-\end{itemize}
+Sob a perspectiva prática e profissional, o trabalho fornece diretrizes concretas para o desenvolvimento de sistemas computacionais aplicados à triagem biomédica. Ao correlacionar a assertividade preditiva na identificação da Fibrilação Atrial com indicadores de eficiência computacional — como tempo de treinamento, latência de inferência e número de parâmetros —, o estudo identifica o ponto de equilíbrio ideal entre precisão diagnóstica e demanda computacional. Essa análise é essencial para orientar a escolha e o embarque de modelos de aprendizado profundo em dispositivos de monitoramento contínuo em tempo real com restrição de hardware.
 
-Mostre que o trabalho não é apenas um texto sobre um tema popular, mas sim uma proposta que visa preencher uma lacuna real e contribuir de forma significativa para a área.
-
+Por fim, a lacuna identificada na literatura reside na carência de comparações diretamente pareadas. Embora estudos prévios empreguem CNN, BiLSTM e Focal Loss, as pesquisas frequentemente introduzem variações simultâneas no pré-processamento, na divisão dos dados, nos hiperparâmetros ou no uso de mecanismos de atenção adicionais, impedindo atribuir os ganhos de desempenho exclusivamente à função de perda ou à arquitetura. O presente trabalho preenche essa lacuna ao manter rigorosamente padronizadas todas as condições experimentais, isolando de forma transparente o impacto real da arquitetura e da função de otimização no diagnóstico da Fibrilação Atrial.
 % ---------------------------------------------------------------
 \section{Objetivo}
 \label{sec:objetivo}
 
-Os objetivos definem o que o trabalho pretende alcançar. Devem ser claros, mensuráveis e diretamente relacionados ao problema identificado.
+Os objetivos a seguir delimitam o escopo prático e analítico do estudo, orientando a condução dos experimentos e a interpretação dos resultados obtidos.
 
 \subsection{Objetivo principal}
 
-O objetivo principal deve ser \textbf{único} e sintetizar o propósito central do trabalho em uma frase direta. Ele deve responder à pergunta: \textit{o que este trabalho pretende resolver ou alcançar?}
+Analisar experimentalmente e comparar as arquiteturas de aprendizado profundo CNN-RNN e BiLSTM para a classificação de fibrilação atrial em sinais de eletrocardiograma, avaliando o impacto das funções de perda Cross-Entropy e Focal Loss por meio de métricas de desempenho e custo computacional.
 
-Exemplo: \textit{Desenvolver um sistema web para gerenciamento de tarefas acadêmicas que permita aos estudantes organizar suas atividades de forma colaborativa.}
-
-\textbf{Dica}: utilize verbos no infinitivo como \textit{desenvolver}, \textit{analisar}, \textit{propor}, \textit{avaliar}, \textit{implementar}, \textit{comparar}, entre outros. Evite verbos vagos como \textit{estudar} ou \textit{entender}.
 
 \subsection{Objetivos secundários}
 
 Os objetivos secundários são desdobramentos do objetivo principal. Eles descrevem as etapas ou ações necessárias para atingir o objetivo principal. Devem ser mensuráveis e verificáveis.
 
 \begin{enumerate}
-    \item Realizar levantamento bibliográfico sobre [tema específico];
-    \item Identificar e analisar os requisitos do sistema/solução proposta;
-    \item Projetar a arquitetura da solução com base nos requisitos levantados;
-    \item Implementar um protótipo funcional da solução proposta;
-    \item Validar a solução por meio de [testes, métricas, estudo de caso, etc.].
+    \item Realizar o pré-processamento dos sinais de ECG do conjunto PhysioNet/CinC 2017, considerando as classes Normal e Fibrilação Atrial.;
+    \item Implementar e treinar as duas arquiteturas propostas, CNN-RNN e BiLSTM, utilizando as funções de perda Cross-Entropy e Focal Loss.;
+    \item Avaliar e comparar o desempenho das quatro configurações experimentais por meio de Accuracy, Precision, Recall, Specificity, F1-score e matriz de confusão.;
+    \item Analisar o impacto das funções de perda Cross-Entropy e Focal Loss, especialmente sobre a classificação da classe minoritária de Fibrilação Atrial.;
+    \item Comparar o custo computacional das abordagens, considerando tempo de treinamento, tempo de inferência e, quando aplicável, quantidade de parâmetros, identificando a configuração com melhor relação entre desempenho e custo computacional..
 \end{enumerate}
 
-\textbf{Atenção}: cada objetivo secundário deve contribuir diretamente para o alcance do objetivo principal. Evite listar objetivos que não tenham relação clara com o problema.
 
 % ===============================================================
 % CAPÍTULO 2 - REFERENCIAL BIBLIOGRÁFICO
