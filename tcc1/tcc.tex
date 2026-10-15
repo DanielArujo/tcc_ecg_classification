@@ -398,99 +398,31 @@ Os objetivos secundários são desdobramentos do objetivo principal. Eles descre
 \chapter{Referencial Bibliográfico}
 \label{cap:referencial}
 
-O referencial bibliográfico tem como finalidade apresentar o embasamento teórico e técnico do trabalho, demonstrando o conhecimento do autor sobre o tema e identificando o estado da arte. Para evitar dúvidas sobre o que escrever em cada parte, este capítulo está organizado em apenas três seções: a \textbf{metodologia da pesquisa bibliográfica} (como as fontes foram levantadas e selecionadas), o \textbf{referencial} (os conceitos e as tecnologias que fundamentam a proposta, reunidos em um único lugar) e os \textbf{trabalhos relacionados} (estudos que enfrentaram o mesmo problema).
+Este capítulo apresenta os fundamentos necessários para a classificação automática de fibrilação atrial em sinais de eletrocardiograma. Inicialmente, descreve-se como os estudos foram selecionados. Em seguida, são apresentados os conceitos relacionados ao ECG, às arquiteturas de aprendizado profundo, ao desbalanceamento de classes e às funções de perda. Por fim, são discutidos trabalhos que investigaram problemas próximos ao desta pesquisa.
 
 % ---------------------------------------------------------------
 \section{Metodologia da pesquisa bibliográfica}
 \label{sec:metodologia_pesquisa}
 
-Descreva como a pesquisa bibliográfica foi conduzida, incluindo:
-
-\begin{itemize}
-    \item \textbf{Bases de dados consultadas}: Google Scholar, IEEE Xplore, ACM Digital Library, SciELO, Periódicos CAPES, entre outras;
-    \item \textbf{Palavras-chave utilizadas}: liste os termos de busca em português e inglês;
-    \item \textbf{Critérios de inclusão e exclusão}: quais critérios foram usados para selecionar ou descartar trabalhos (período, idioma, relevância, tipo de publicação);
-    \item \textbf{Período de abrangência}: intervalo de anos das publicações consultadas.
-\end{itemize}
-
-Exemplo de descrição:
-
-\textit{A pesquisa bibliográfica foi realizada nas bases Google Scholar, IEEE Xplore e ACM Digital Library, utilizando as palavras-chave ``machine learning'', ``classificação de texto'' e ``processamento de linguagem natural''. Foram selecionados artigos publicados entre 2018 e 2025, em português e inglês, que abordassem diretamente técnicas de classificação automática de documentos.}
+Para esta versão inicial, foi realizado um levantamento bibliográfico exploratório no PubMed, no repositório PhysioNet e nos portais das publicações Computing in Cardiology e BMC Medical Informatics and Decision Making. Foram pesquisadas combinações dos termos em inglês “atrial fibrillation”, “ECG classification”, “convolutional recurrent neural network”, “BiLSTM”, “class imbalance” e “focal loss”.
+Foram examinadas publicações em inglês de 2017 a 2024. Para a seleção dos trabalhos relacionados, deu-se prioridade a estudos originais que classificaram fibrilação atrial em registros de ECG e descreveram as arquiteturas e os dados utilizados. Estudos sobre outras tarefas, como a classificação de batimentos isolados, foram considerados para fundamentar conceitos técnicos, mas não escolhidos como trabalhos diretamente relacionados. Após a leitura dos títulos e resumos, foram selecionados três estudos com aplicação ao conjunto PhysioNet/CinC Challenge 2017 para uma análise inicial mais detalhada.
 
 % ---------------------------------------------------------------
 \section{Referencial}
 \label{sec:referencial}
 
-Esta seção reúne, em um único lugar, todo o embasamento teórico e técnico do trabalho. Aqui você apresenta os conceitos, teorias e definições que fundamentam a pesquisa e, na sequência, detalha as tecnologias, algoritmos, frameworks ou metodologias específicas que serão empregados no desenvolvimento da solução. \textbf{Não é necessário separar ``teoria'' de ``fundamentos técnicos''}: organize o conteúdo de forma fluida, partindo do mais geral para o mais específico.
+\subsection{Trabalho 1: Convolutional Recurrent Neural Networks for Electrocardiogram Classification}
 
-Organize esta seção por temas ou conceitos, não por autor. Cada subseção deve abordar um conceito relevante, explicando-o, relacionando-o ao contexto do trabalho e, quando aplicável, mostrando como ele será utilizado na solução proposta.
+Zihlmann 2017 investigaram a classificação de registros de ECG no conjunto PhysioNet/CinC Challenge 2017. Os autores compararam uma rede convolucional com uma arquitetura que combina camadas convolucionais e LSTM. A segunda obteve F1 de 82,1\% no conjunto de teste oculto do desafio. Esse estudo é próximo ao presente TCC porque também compara arquiteturas para classificação de fibrilação atrial. O recorte proposto aqui acrescenta a comparação entre Cross-Entropy e Focal Loss sob as mesmas condições experimentais.
 
-Por exemplo:
-\begin{itemize}
-    \item Se o trabalho envolve desenvolvimento web, apresente desde os conceitos gerais (arquitetura cliente-servidor, APIs REST, padrões de projeto) até as tecnologias concretas que serão usadas (linguagens, frameworks, bancos de dados) e o porquê de cada escolha;
-    \item Se envolve inteligência artificial, explique os fundamentos da área e, em seguida, os algoritmos e técnicas específicos que serão aplicados (árvores de decisão, redes neurais, SVM, etc.);
-    \item Se envolve análise de dados, apresente os conceitos estatísticos e, na sequência, as métricas e técnicas que serão efetivamente utilizadas.
-\end{itemize}
+\subsection{Trabalho 2: ECG signal classification for the detection of cardiac arrhythmias using a convolutional recurrent neural network}
 
-Utilize citações para fundamentar cada conceito apresentado e empregue figuras, diagramas e tabelas para ilustrar quando apropriado. Segundo \citeonline{Wazlawick2020}, o referencial deve demonstrar que o autor domina os fundamentos necessários para conduzir a pesquisa.
+Xiong et al. propuseram a RhythmNet, uma rede convolucional recorrente para classificar diferentes ritmos em ECG, incluindo fibrilação atrial. O modelo foi treinado com registros do PhysioNet/CinC Challenge 2017, e os autores relataram um resultado F1 de 82\% para a classificação de ritmo normal, fibrilação atrial e outros ritmos no teste utilizado no estudo. Esse trabalho ajuda a fundamentar a escolha de uma arquitetura CNN-RNN, embora tenha uma tarefa com mais classes do que a classificação binária prevista neste TCC.
 
-% ---------------------------------------------------------------
-\section{Trabalhos relacionados}
-\label{sec:trabalhos_relacionados}
+\subsection{Trabalho 3: ECG signal classification based on deep CNN and BiLSTM}
 
-Apresente até \textbf{3 trabalhos} que \textbf{compartilhem o mesmo foco de resolução de problema} que o seu. O critério principal de seleção é: os trabalhos escolhidos devem ter tentado resolver o \textbf{mesmo problema} (ou um problema muito próximo) ao que você está propondo resolver. Não basta que o trabalho aborde o mesmo tema ou utilize a mesma tecnologia --- ele deve ter enfrentado o mesmo desafio prático ou teórico.
+Cheng, Zou e Zhao (2021) desenvolveram um modelo que combina CNN e BiLSTM para classificar sinais de ECG. Os autores utilizaram dados do PhysioNet/CinC Challenge 2017 e relataram acurácia de 89,3\% e F1 de 0,891 em validação cruzada. O estudo é relevante por empregar BiLSTM na análise temporal do ECG. Seus números não devem ser comparados diretamente aos dos dois artigos anteriores, pois os procedimentos de avaliação diferem. No presente TCC, a proposta é avaliar as arquiteturas e as duas funções de perda dentro de um mesmo protocolo.
 
-\textbf{Por que esse critério é importante?} Ao selecionar trabalhos que atacam o mesmo problema, você demonstra que:
-\begin{itemize}
-    \item O problema é relevante e já foi reconhecido por outros pesquisadores;
-    \item Existem soluções anteriores, mas com limitações que o seu trabalho pretende superar;
-    \item Seu trabalho não é uma repetição, mas um avanço em relação ao que já foi feito.
-\end{itemize}
-
-Para cada trabalho relacionado, descreva:
-\begin{enumerate}
-    \item \textbf{Qual problema} o trabalho tentou resolver (e por que é o mesmo problema que o seu);
-    \item A metodologia ou abordagem utilizada para resolvê-lo;
-    \item Os principais resultados obtidos;
-    \item As limitações identificadas na solução proposta;
-    \item Como o \textbf{seu trabalho se diferencia} ou avança em relação a ele.
-\end{enumerate}
-
-\subsection{Trabalho 1: [Título do trabalho]}
-
-\citeonline{Silva2022} abordou o problema de [descrever o problema --- deve ser o mesmo ou muito similar ao seu]. Para resolvê-lo, os autores propuseram [descrever a solução]. A metodologia utilizada foi [descrever]. Os resultados mostraram que [descrever]. No entanto, a solução apresenta limitações como [descrever as lacunas que permanecem]. O presente trabalho diferencia-se por [explicar como sua proposta avança na resolução do mesmo problema].
-
-\subsection{Trabalho 2: [Título do trabalho]}
-
-[Descrever o segundo trabalho seguindo a mesma estrutura acima, sempre evidenciando que o problema abordado é o mesmo ou muito próximo ao seu.]
-
-\subsection{Trabalho 3: [Título do trabalho]}
-
-[Descrever o terceiro trabalho seguindo a mesma estrutura acima, sempre evidenciando que o problema abordado é o mesmo ou muito próximo ao seu.]
-
-\vspace{0.5cm}
-
-Uma tabela comparativa ajuda a sintetizar as diferenças entre os trabalhos:
-
-\begin{table}[htb]
-    \centering
-    \caption{Comparação entre trabalhos relacionados}
-    \label{tab:trabalhos_relacionados}
-    \begin{tabular}{l|c|c|c|c}
-        \toprule
-        \textbf{Critério} & \textbf{Trabalho 1} & \textbf{Trabalho 2} & \textbf{Trabalho 3} & \textbf{Este trabalho} \\
-        \midrule
-        Objetivo           & [resumo]   & [resumo]   & [resumo]   & [resumo] \\
-        \midrule
-        Tecnologia         & [tecn.]    & [tecn.]    & [tecn.]    & [tecn.] \\
-        \midrule
-        Validação          & [método]   & [método]   & [método]   & [método] \\
-        \midrule
-        Limitação          & [limit.]   & [limit.]   & [limit.]   & --- \\
-        \bottomrule
-    \end{tabular}
-    \legend{Fonte: Elaborado pelo autor (2025)}
-\end{table}
 
 % ===============================================================
 % CAPÍTULO 3 - DESENVOLVIMENTO
