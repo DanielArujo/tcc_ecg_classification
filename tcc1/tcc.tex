@@ -91,7 +91,7 @@
 % ---------------------------------------------------------------
 % INFORMAÇÕES DO DOCUMENTO
 % ---------------------------------------------------------------
-\titulo{Comparação entre CNN-RNN e BiLSTM na classificação de fibrilação atrial em sinais de eletrocardiograma: análise do impacto da Cross-Entropy e da Focal Loss }
+\titulo{Comparação entre CNN-BiLSTM e BiLSTM na classificação de fibrilação atrial em sinais de eletrocardiograma: análise do impacto da Cross-Entropy e da Focal Loss }
 \author{Daniel de Araujo Carvalho \\ Eduardo Dias Santos}
 \local{São Paulo}
 \data{2026}
@@ -219,49 +219,36 @@ UML   & \textit{Unified Modeling Language} \\
 \chapter{Introdução}
 \label{cap:introducao}
 
-O eletrocardiograma (ECG) é um exame utilizado para registrar a atividade elétrica do
-coração por meio de sensores posicionados sobre o corpo \cite{VanGelder2024}. A partir desse
-registro, é possível observar características relacionadas ao ritmo cardíaco e identificar
-possíveis alterações. Entre essas alterações está a fibrilação atrial (FA), uma arritmia
-caracterizada por atividade elétrica atrial desorganizada \cite{VanGelder2024}. Por esse
-motivo, a análise automatizada desses sinais tem sido estudada como uma aplicação de
-técnicas de aprendizado de máquina e aprendizado profundo \cite{Efe2024,Almousa2023}.
+O eletrocardiograma (ECG) é um exame utilizado para registrar a 
+atividade elétrica do coração por meio de sensores posicionados 
+sobre o corpo \cite{VanGelder2024}. A partir desse registro, 
+é possível observar características relacionadas ao ritmo cardíaco 
+e identificar possíveis alterações. Entre essas alterações está a 
+fibrilação atrial (FA), uma arritmia caracterizada por atividade elétrica 
+atrial desorganizada \cite{VanGelder2024}. Por esse motivo, a análise 
+automatizada desses sinais tem sido estudada como uma aplicação de técnicas 
+de aprendizado de máquina e aprendizado profundo \cite{Efe2024,Almousa2023}.
 
-Com o avanço do aprendizado de máquina e, principalmente, do
-aprendizado profundo, diferentes arquiteturas de redes neurais
-passaram a ser utilizadas para analisar sinais de ECG. As Redes
-Neurais Convolucionais (CNN) podem identificar padrões locais
-presentes no sinal, enquanto as Redes Neurais Recorrentes (RNN)
-são capazes de representar informações relacionadas à sequência
-temporal. Outra abordagem é a utilização de redes Long
-Short-Term Memory Bidirecionais (BiLSTM), que permitem analisar
-informações temporais considerando diferentes direções da
-sequência.
+Com o avanço do aprendizado profundo, diferentes arquiteturas de redes neurais 
+passaram a ser utilizadas para analisar sinais de ECG. As Redes Neurais Convolucionais (CNN) 
+podem identificar padrões locais presentes no sinal, enquanto as redes Long Short-Term Memory Bidirecionais (BiLSTM) 
+são capazes de representar informações temporais considerando as duas direções da sequência. A combinação dessas abordagens, 
+denominada CNN-BiLSTM, permite utilizar as camadas convolucionais para extrair características locais do sinal e as camadas 
+BiLSTM para processar suas relações temporais.
 
-Um dos desafios encontrados na classificação de ECG está
-relacionado ao desequilíbrio entre as classes. No conjunto de
-dados utilizado pelo PhysioNet/CinC Challenge 2017, por exemplo,
-existem 8.528 registros de ECG de uma derivação, sendo 5.154
-classificados como ritmo normal e 771 como fibrilação atrial.
-Os registros possuem frequência de amostragem de 300 Hz e
-duração variável \cite{Clifford2017}.
+Um dos desafios encontrados na classificação de ECG está relacionado ao desequilíbrio entre as classes. No conjunto de dados utilizado 
+pelo PhysioNet/CinC Challenge 2017, por exemplo, existem 8.528 registros de ECG de uma derivação, sendo 5.154 classificados 
+como ritmo normal e 771 como fibrilação atrial. Os registros possuem frequência de amostragem de 300 Hz e duração variável \cite{Clifford2017}.
 
-Nesse cenário, além da escolha da arquitetura, a função utilizada
-durante o treinamento também pode influenciar o comportamento
-do modelo. A Cross-Entropy é uma função de perda amplamente
-utilizada em problemas de classificação, enquanto a Focal Loss
-foi proposta para dar maior importância aos exemplos mais
-difíceis durante o treinamento. Assim, a comparação
-entre essas funções pode ajudar a compreender seus efeitos em
-diferentes arquiteturas de classificação de ECG
-\cite{Efe2024}.
+Nesse cenário, além da escolha da arquitetura, a função utilizada durante o treinamento 
+também pode influenciar o comportamento do modelo. A Cross-Entropy é uma função de perda 
+amplamente utilizada em problemas de classificação, enquanto a Focal Loss foi proposta para dar 
+maior importância aos exemplos mais difíceis durante o treinamento. Assim, a comparação entre essas funções 
+pode ajudar a compreender seus efeitos em diferentes arquiteturas de classificação de ECG \cite{Efe2024}.
 
-Dessa forma, este trabalho propõe uma comparação experimental
-entre as arquiteturas CNN-RNN e BiLSTM, considerando as funções
-de perda Cross-Entropy e Focal Loss. O estudo será realizado
-sobre a classificação binária entre ritmo normal e fibrilação
-atrial, buscando analisar tanto o desempenho dos modelos quanto
-seu custo computacional.
+Dessa forma, este trabalho propõe uma comparação experimental entre as arquiteturas CNN-BiLSTM e BiLSTM, 
+considerando as funções de perda Cross-Entropy e Focal Loss. O estudo será realizado sobre a classificação 
+binária entre ritmo normal e fibrilação atrial, buscando analisar tanto o desempenho dos modelos quanto seu custo computacional..
 %\vspace{0.3cm}
 %\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
 %\textbf{Orientação sobre a linguagem da introdução}
@@ -282,30 +269,25 @@ seu custo computacional.
 \section{Contexto}
 \label{sec:contexto}
 
-A classificação automática de fibrilação atrial a partir de sinais de ECG
-apresenta um problema relevante para a área de Computação, pois envolve
-o processamento de séries temporais, a identificação de padrões e a
-classificação de dados. O próprio PhysioNet/CinC Challenge 2017 foi
-desenvolvido para estimular a criação de algoritmos capazes de classificar
-registros curtos de ECG em diferentes categorias, incluindo ritmo normal
-e fibrilação atrial \cite{Clifford2017}.
+A classificação automática de fibrilação atrial a partir de sinais de ECG apresenta 
+um problema relevante para a área de Computação, pois envolve o processamento de séries 
+temporais, a identificação de padrões e a classificação de dados. O próprio PhysioNet/CinC 
+Challenge 2017 foi desenvolvido para estimular a criação de algoritmos capazes de classificar 
+registros curtos de ECG em diferentes categorias, incluindo ritmo normal e fibrilação atrial \cite{Clifford2017}.
 
-Além da variedade dos sinais, o desequilíbrio entre as classes pode
-dificultar o treinamento de modelos de aprendizado profundo. No conjunto
-de treinamento do desafio, a quantidade de registros de fibrilação atrial
-é consideravelmente menor que a quantidade de registros de ritmo normal
-\cite{Clifford2017}. Por esse motivo, torna-se importante avaliar o
-desempenho dos modelos por meio de diferentes métricas, e não apenas
-pela acurácia.
+Além da variedade dos sinais, o desequilíbrio entre as classes pode dificultar o 
+treinamento de modelos de aprendizado profundo. No conjunto de treinamento do desafio, 
+a quantidade de registros de fibrilação atrial é consideravelmente menor que a quantidade 
+de registros de ritmo normal \cite{Clifford2017}. Por esse motivo, torna-se importante 
+avaliar o desempenho dos modelos por meio de diferentes métricas, e não apenas pela acurácia.
 
-Nesse contexto, diferentes arquiteturas de aprendizado profundo podem
-apresentar comportamentos distintos ao lidar com as características
-temporais dos sinais. Da mesma forma, a função de perda utilizada no
-treinamento pode alterar a influência dos exemplos mais fáceis e difíceis
-sobre o aprendizado \cite{Efe2024}. Portanto, comparar arquiteturas e
-funções de perda sob condições experimentais controladas constitui uma
-forma de investigar quais fatores contribuem para o desempenho da
-classificação.
+Nesse contexto, diferentes arquiteturas de aprendizado profundo podem apresentar comportamentos distintos ao 
+lidar com as características dos sinais. A arquitetura BiLSTM permite processar informações temporais nas duas 
+direções da sequência, enquanto a CNN-BiLSTM acrescenta uma etapa de extração de características locais antes desse 
+processamento. Dessa forma, a comparação entre essas arquiteturas permite investigar se a inclusão de camadas convolucionais 
+contribui para a classificação dos sinais de ECG. Da mesma forma, a função de perda utilizada no treinamento pode alterar a 
+influência dos exemplos mais fáceis e difíceis sobre o aprendizado \cite{Efe2024}. Portanto, comparar arquiteturas e funções de 
+perda sob condições experimentais controladas constitui uma forma de investigar quais fatores contribuem para o desempenho da classificação.
 
 %\vspace{0.3cm}
 %\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
@@ -344,31 +326,34 @@ classificação.
 % ---------------------------------------------------------------
 \section{Justificativa}
 \label{sec:justificativa}
-A justificativa acadêmica deste estudo está relacionada à necessidade de
-comparar diferentes abordagens de aprendizado profundo aplicadas à
-classificação de sinais de ECG. Para isso, será realizado um experimento
-fatorial 2 $\times$ 2, comparando as arquiteturas CNN-RNN e BiLSTM
-combinadas às funções de perda Cross-Entropy e Focal Loss. Essa comparação
-permitirá analisar o efeito da arquitetura e da função de perda sobre o
-desempenho dos modelos, utilizando métricas como Accuracy, Precision,
-Recall, Specificity e F1-score.
+A justificativa acadêmica deste estudo está relacionada à necessidade de 
+comparar diferentes abordagens de aprendizado profundo aplicadas à classificação 
+de sinais de ECG. A escolha das arquiteturas CNN-BiLSTM e BiLSTM permite investigar 
+a contribuição da etapa convolucional na extração de características dos sinais. 
+Enquanto a BiLSTM realiza o processamento das informações temporais considerando as 
+duas direções da sequência, a CNN-BiLSTM acrescenta camadas convolucionais capazes de 
+identificar padrões locais antes desse processamento. Como ambas utilizam a estrutura 
+BiLSTM, essa comparação permite analisar se a inclusão da CNN apresenta benefícios para a 
+classificação de fibrilação atrial, mantendo uma base recorrente comum entre as abordagens.
 
-Do ponto de vista prático e profissional, o trabalho busca analisar não
-apenas o desempenho dos modelos na classificação entre ritmo normal e
-fibrilação atrial, mas também seu custo computacional. Para isso, serão
-considerados fatores como tempo de treinamento, tempo de inferência e
-número de parâmetros. Dessa forma, será possível comparar o desempenho
-dos modelos considerando tanto sua capacidade de classificação quanto
-os recursos computacionais necessários para sua execução.
+Além da comparação entre as arquiteturas, será realizado um experimento fatorial 2 $\times$ 2, 
+combinando CNN-BiLSTM e BiLSTM com as funções de perda Cross-Entropy e Focal Loss. Essa organização 
+permitirá analisar separadamente os efeitos da arquitetura e da função de perda, além de investigar se 
+existe interação entre esses fatores. O desempenho será avaliado por meio de métricas como Accuracy, Precision, 
+Recall, Specificity e F1-score, considerando especialmente a identificação da classe minoritária de fibrilação atrial.
 
-Por fim, estudos anteriores apresentam diferentes combinações de
-arquiteturas, funções de perda e técnicas de processamento para a
-classificação de ECG \cite{Efe2024,Almousa2023,Albarrak2025}. Nesse
-contexto, este trabalho busca realizar uma comparação sob condições
-experimentais controladas, mantendo os mesmos dados, pré-processamento
-e condições de treinamento para os diferentes modelos. Com isso,
-pretende-se identificar as diferenças de desempenho entre as arquiteturas
-CNN-RNN e BiLSTM e entre as funções de perda Cross-Entropy e Focal Loss.% ---------------------------------------------------------------
+Do ponto de vista prático e profissional, o trabalho busca analisar 
+não apenas o desempenho dos modelos na classificação entre ritmo normal e fibrilação atrial, 
+mas também seu custo computacional. Para isso, serão considerados fatores como tempo de treinamento, 
+tempo de inferência e número de parâmetros. Dessa forma, será possível comparar as abordagens 
+considerando tanto sua capacidade de classificação quanto os recursos computacionais necessários para sua execução.
+
+Por fim, estudos anteriores apresentam diferentes combinações de arquiteturas, funções de perda e 
+técnicas de processamento para a classificação de ECG \cite{Efe2024,Almousa2023,Albarrak2025}. Nesse 
+contexto, este trabalho busca realizar uma comparação sob condições experimentais controladas, mantendo 
+os mesmos dados, pré-processamento e condições de treinamento para os diferentes modelos. Com isso, 
+pretende-se identificar as diferenças de desempenho entre as arquiteturas CNN-BiLSTM e BiLSTM e entre as funções de perda Cross-Entropy e Focal Loss.
+% ---------------------------------------------------------------
 \section{Objetivo}
 \label{sec:objetivo}
 
@@ -376,7 +361,9 @@ Os objetivos a seguir delimitam o escopo prático e analítico do estudo, orient
 
 \subsection{Objetivo principal}
 
-Analisar experimentalmente e comparar as arquiteturas de aprendizado profundo CNN-RNN e BiLSTM para a classificação de fibrilação atrial em sinais de eletrocardiograma, avaliando o impacto das funções de perda Cross-Entropy e Focal Loss por meio de métricas de desempenho e custo computacional.
+Analisar experimentalmente e comparar as arquiteturas de aprendizado profundo CNN-BiLSTM e BiLSTM para a 
+classificação de fibrilação atrial em sinais de eletrocardiograma, avaliando o impacto das funções de perda 
+Cross-Entropy e Focal Loss por meio de métricas de desempenho e custo computacional.
 
 
 \subsection{Objetivos secundários}
@@ -384,11 +371,11 @@ Analisar experimentalmente e comparar as arquiteturas de aprendizado profundo CN
 Os objetivos secundários são desdobramentos do objetivo principal. Eles descrevem as etapas ou ações necessárias para atingir o objetivo principal. Devem ser mensuráveis e verificáveis.
 
 \begin{enumerate}
-    \item Realizar o pré-processamento dos sinais de ECG do conjunto PhysioNet/CinC 2017, considerando as classes Normal e Fibrilação Atrial.;
-    \item Implementar e treinar as duas arquiteturas propostas, CNN-RNN e BiLSTM, utilizando as funções de perda Cross-Entropy e Focal Loss.;
-    \item Avaliar e comparar o desempenho das quatro configurações experimentais por meio de Accuracy, Precision, Recall, Specificity, F1-score e matriz de confusão.;
-    \item Analisar o impacto das funções de perda Cross-Entropy e Focal Loss, especialmente sobre a classificação da classe minoritária de Fibrilação Atrial.;
-    \item Comparar o custo computacional das abordagens, considerando tempo de treinamento, tempo de inferência e, quando aplicável, quantidade de parâmetros, identificando a configuração com melhor relação entre desempenho e custo computacional..
+    \item Realizar o pré-processamento dos sinais de ECG do conjunto PhysioNet/CinC 2017, considerando as classes Normal e Fibrilação Atrial;
+    \item Implementar e treinar as duas arquiteturas propostas, CNN-BiLSTM e BiLSTM, utilizando as funções de perda Cross-Entropy e Focal Loss;
+    \item Avaliar e comparar o desempenho das quatro configurações experimentais por meio de Accuracy, Precision, Recall, Specificity, F1-score e matriz de confusão;
+    \item Analisar o impacto das funções de perda Cross-Entropy e Focal Loss, especialmente sobre a classificação da classe minoritária de Fibrilação Atrial;
+    \item Comparar o custo computacional das abordagens, considerando tempo de treinamento, tempo de inferência e quantidade de parâmetros, identificando a configuração com melhor relação entre desempenho e custo computacional.
 \end{enumerate}
 
 
@@ -430,26 +417,153 @@ Cheng, Zou e Zhao (2021) desenvolveram um modelo que combina CNN e BiLSTM para c
 \chapter{Desenvolvimento}
 \label{cap:desenvolvimento}
 
-Neste capítulo, apresenta-se a solução proposta para o problema identificado, bem como o cronograma de trabalho previsto para o desenvolvimento completo do projeto no TCC2.
+% Neste capítulo, apresenta-se a solução proposta para o problema identificado, bem como o cronograma de trabalho previsto para o desenvolvimento completo do projeto no TCC2.
 
 % ---------------------------------------------------------------
 \section{Solução proposta}
 \label{sec:solucao}
 
-Descreva detalhadamente a solução que será desenvolvida para resolver o problema apresentado na introdução. A descrição deve incluir:
 
-\begin{itemize}
-    \item \textbf{Visão geral da solução}: o que será desenvolvido (sistema, aplicativo, modelo, ferramenta, etc.);
-    \item \textbf{Arquitetura}: como os componentes da solução se organizam e interagem;
-    \item \textbf{Tecnologias e ferramentas}: quais linguagens, frameworks, bibliotecas, bancos de dados e ambientes serão utilizados, e por que foram escolhidos;
-    \item \textbf{Funcionalidades principais}: o que a solução fará para atender aos objetivos;
-    \item \textbf{Metodologia de desenvolvimento}: qual abordagem será utilizada (ágil, cascata, prototipação, etc.);
-    \item \textbf{Critérios de validação}: como será medido o sucesso da solução (métricas, testes, avaliação com usuários, etc.).
-\end{itemize}
+\subsection{Visão geral da solução}
 
-Utilize diagramas, fluxogramas ou mockups para ilustrar a solução. Exemplo de descrição de arquitetura:
+O desenvolvimento da solução será organizado em etapas, iniciando pela aquisição e preparação dos sinais de ECG, seguida pela implementação das arquiteturas de redes neurais, 
+treinamento, validação e avaliação dos resultados.
 
-\textit{A solução proposta consiste em uma aplicação web composta por três camadas: front-end desenvolvido em React.js, back-end em Node.js com Express, e banco de dados PostgreSQL. A comunicação entre front-end e back-end será feita por meio de uma API REST.}
+Inicialmente, serão selecionados os registros correspondentes às classes Normal e Fibrilação Atrial da base PhysioNet/CinC Challenge 
+2017. Em seguida, os sinais passarão por procedimentos de pré-processamento, necessários para adequar os registros às entradas das redes neurais.
+
+Após a preparação dos dados, serão implementadas as arquiteturas CNN-BiLSTM e BiLSTM. Cada arquitetura será treinada utilizando as duas 
+funções de perda selecionadas, resultando em quatro configurações experimentais.
+
+Por fim, os resultados serão comparados considerando métricas de desempenho, análise estatística e custo computacional. Essa abordagem 
+permitirá investigar os efeitos individuais das arquiteturas e das funções de perda, bem como a interação entre esses dois fatores.
+
+
+\subsection{Arquitetura da solução}
+
+A arquitetura da solução será organizada em um fluxo de processamento composto por aquisição dos dados, seleção das classes, pré-processamento, 
+divisão dos conjuntos de dados, treinamento dos modelos e avaliação dos resultados.
+
+A Figura~\ref{fig:arquitetura} apresenta uma representação geral do fluxo proposto para o desenvolvimento do experimento.
+
+\begin{figure}[htb]
+    \centering
+    \caption{Arquitetura proposta para o sistema de classificação de sinais ECG.}
+    \label{fig:arquitetura}
+    \includegraphics[width=0.75\textwidth]{assets/arquitetura.png}
+    \legend{Fonte: Elaborado pelo autor (2026)}
+\end{figure}
+
+Conforme apresentado na Figura~\ref{fig:arquitetura}, inicialmente serão obtidos os registros de ECG da base PhysioNet/CinC Challenge 2017. 
+Na sequência, serão selecionados os registros pertencentes às classes Normal e Fibrilação Atrial, excluindo-se as categorias Outro Ritmo e Ruidoso.
+
+Após essa seleção, os sinais serão submetidos ao pré-processamento, incluindo o tratamento das diferenças de duração entre os 
+registros e a normalização dos dados. Posteriormente, a base será dividida em conjuntos de treinamento, validação e teste, respeitando a distribuição das classes.
+
+Na etapa seguinte, os dados serão utilizados no treinamento das quatro configurações experimentais. Os modelos resultantes serão 
+avaliados por meio de métricas de classificação e indicadores de custo computacional. Por último, os resultados serão analisados comparativamente 
+para identificar as diferenças de desempenho entre as arquiteturas e funções de perda.
+
+
+\subsection{Tecnologias e ferramentas}
+
+Para o desenvolvimento dos experimentos, será utilizada a base de dados PhysioNet/CinC Challenge 2017, composta por registros de eletrocardiograma (ECG) de uma 
+única derivação. Os sinais foram disponibilizados com frequência de amostragem de 300 Hz e possuem durações variáveis. A base apresenta diferentes categorias de 
+classificação, incluindo ritmo normal, fibrilação atrial, outros ritmos e registros ruidosos.
+
+Neste trabalho, serão considerados apenas os registros classificados como ritmo normal e fibrilação atrial, caracterizando um problema de classificação 
+binária. Os registros pertencentes às demais categorias serão excluídos da etapa de treinamento e avaliação dos modelos.
+
+Após a seleção dos registros, será realizada a etapa de pré-processamento dos sinais, com o objetivo de adequá-los à entrada das arquiteturas de 
+aprendizado profundo. Essa etapa deverá contemplar o tratamento das diferenças de duração entre os registros e a normalização dos valores dos sinais, 
+de modo a estabelecer um padrão de representação para os modelos CNN-BiLSTM e BiLSTM. Os mesmos procedimentos de pré-processamento serão aplicados aos 
+dois modelos, buscando garantir condições equivalentes de comparação.
+
+A implementação será desenvolvida utilizando a linguagem Python, com o auxílio de bibliotecas específicas para processamento de sinais e aprendizado de 
+máquina. A biblioteca WFDB será utilizada para leitura dos registros da base de dados, enquanto o PyTorch será empregado na construção, treinamento e 
+avaliação das arquiteturas de redes neurais. Também poderão ser utilizadas bibliotecas como NumPy e Pandas para manipulação dos dados, Scikit-learn para 
+divisão dos conjuntos e cálculo de métricas, e Matplotlib para geração de gráficos e visualização dos sinais.
+
+\subsection{Arquiteturas dos modelos}
+Serão investigadas duas arquiteturas de redes neurais: CNN-BiLSTM e BiLSTM.
+
+A arquitetura CNN-BiLSTM combinará uma rede neural convolucional unidimensional (CNN 1D) com uma rede de memória de longo e curto prazo 
+bidirecional (BiLSTM). Inicialmente, a camada convolucional será responsável pela extração de características locais dos sinais de ECG. Em 
+seguida, essas características serão encaminhadas à camada BiLSTM, responsável pelo processamento das dependências temporais considerando as 
+informações nos sentidos direto e reverso da sequência.
+
+A arquitetura BiLSTM, por sua vez, utilizará diretamente as características dos sinais de ECG como entrada para a camada recorrente bidirecional, 
+sem a utilização de uma etapa convolucional anterior.
+
+A comparação entre essas arquiteturas permitirá investigar a contribuição da extração convolucional de características para a classificação da 
+fibrilação atrial, mantendo o processamento recorrente bidirecional como componente comum aos dois modelos.
+
+\subsection{Configuração dos experimentos}
+Para investigar os efeitos das arquiteturas e das funções de perda, será adotado um desenho experimental fatorial 2 × 2. Nesse delineamento, serão considerados dois fatores: arquitetura da rede neural e função de perda.
+
+O primeiro fator será composto pelas arquiteturas CNN-BiLSTM e BiLSTM. O segundo será composto pelas funções Cross-Entropy e Focal Loss.
+
+A combinação desses fatores resultará em quatro configurações experimentais, conforme apresentado na Tabela ~\ref{tab:desenho_fatorial}.
+
+
+\begin{table}[htb]
+    \centering
+    \caption{Desenho fatorial 2 $\times$ 2 dos experimentos}
+    \label{tab:desenho_fatorial}
+    \begin{tabular}{lcc}
+        \hline
+        \textbf{Arquitetura} &
+        \textbf{Cross-Entropy} &
+        \textbf{Focal Loss} \\
+        \hline
+        CNN-BiLSTM & E1 & E2 \\
+        BiLSTM     & E3 & E4 \\
+        \hline
+    \end{tabular}
+    \fonte{Elaborado pelo autor (2026).}
+\end{table}
+
+A função Cross-Entropy será utilizada como referência para o treinamento dos modelos, enquanto a Focal Loss será investigada como alternativa 
+para lidar com o desbalanceamento entre as classes, atribuindo maior importância aos exemplos classificados com maior dificuldade.
+
+As quatro configurações serão submetidas ao mesmo protocolo de treinamento e avaliação. Serão definidos hiperparâmetros comuns, como tamanho do 
+lote (batch size), número de épocas e estratégia de otimização, além dos parâmetros específicos de cada arquitetura e função de perda.
+
+Os experimentos serão repetidos utilizando sementes aleatórias previamente definidas, possibilitando analisar a variabilidade dos resultados por 
+meio da média e do desvio-padrão das métricas obtidas.
+
+
+\subsection{Critérios de avaliação}
+A avaliação dos modelos será realizada considerando duas dimensões: desempenho na classificação e custo computacional.
+
+Para avaliar o desempenho da classificação, serão utilizadas as métricas de acurácia, precisão, revocação, especificidade e F1-score. 
+Também serão consideradas as áreas sob as curvas ROC (AUC-ROC) e Precisão-Revocação (AUC-PR), permitindo analisar o comportamento dos modelos em diferentes 
+limiares de classificação.
+
+Será dada atenção especial à identificação da classe Fibrilação Atrial, considerando o desbalanceamento existente na base de dados. Dessa forma, a análise 
+não ficará restrita à acurácia, permitindo observar a capacidade dos modelos de identificar corretamente os registros pertencentes à classe minoritária.
+
+Além do desempenho preditivo, será avaliado o custo computacional das arquiteturas por meio do tempo de treinamento, latência de inferência por registro e 
+quantidade de parâmetros treináveis.
+
+Por fim, os resultados das quatro configurações serão comparados considerando as médias e os desvios-padrão das métricas obtidas nas repetições experimentais. 
+Também será realizada uma análise estatística para investigar a significância das diferenças observadas entre as arquiteturas e funções de perda.
+
+Essa avaliação permitirá identificar a configuração que apresenta o melhor equilíbrio entre desempenho na classificação da fibrilação atrial e custo computacional.
+%Descreva detalhadamente a solução que será desenvolvida para resolver o problema apresentado na introdução. A descrição deve incluir:
+
+%\begin{itemize}
+%    \item \textbf{Visão geral da solução}: o que será desenvolvido (sistema, aplicativo, modelo, ferramenta, etc.);
+%    \item \textbf{Arquitetura}: como os componentes da solução se organizam e interagem;
+ %   \item \textbf{Tecnologias e ferramentas}: quais linguagens, frameworks, bibliotecas, bancos de dados e ambientes serão utilizados, e por que foram escolhidos;
+ %   \item \textbf{Funcionalidades principais}: o que a solução fará para atender aos objetivos;
+ %   \item \textbf{Metodologia de desenvolvimento}: qual abordagem será utilizada (ágil, cascata, prototipação, etc.);
+ %   \item \textbf{Critérios de validação}: como será medido o sucesso da solução (métricas, testes, avaliação com usuários, etc.).
+%\end{itemize}
+
+%Utilize diagramas, fluxogramas ou mockups para ilustrar a solução. Exemplo de descrição de arquitetura:
+
+%\textit{A solução proposta consiste em uma aplicação web composta por três camadas: front-end desenvolvido em React.js, back-end em Node.js com Express, e banco de dados PostgreSQL. A comunicação entre front-end e back-end será feita por meio de uma API REST.}
 
 % ---------------------------------------------------------------
 % EXEMPLO DE INSERÇÃO DE FIGURA (substitua pela sua imagem)
@@ -458,17 +572,86 @@ Utilize diagramas, fluxogramas ou mockups para ilustrar a solução. Exemplo de 
 % (\legend) vem ABAIXO. Por isso \caption e \label aparecem ANTES do
 % \includegraphics. Use \ref{...} para citar a figura no texto.
 % ---------------------------------------------------------------
-\begin{figure}[htb]
-    \centering
-    \caption{Exemplo de inserção de figura --- substitua pela imagem da sua solução (diagrama de arquitetura, fluxograma ou mockup).}
-    \label{fig:exemplo_arquitetura}
-    \includegraphics[width=0.35\textwidth]{assets/logo-senac.png}
-    \legend{Fonte: Elaborado pelo autor (2025)}
-\end{figure}
 
-Toda figura deve ser numerada, ter legenda (\verb|\caption|) e indicação de fonte, além de ser citada no texto --- por exemplo, a Figura~\ref{fig:exemplo_arquitetura}. As figuras com legenda aparecem automaticamente na \textit{Lista de ilustrações}, nos elementos pré-textuais.
+
+%Toda figura deve ser numerada, ter legenda (\verb|\caption|) e indicação de fonte, além de ser citada no texto --- por exemplo, a Figura~\ref{fig:arquitetura}. As figuras com legenda aparecem automaticamente na \textit{Lista de ilustrações}, nos elementos pré-textuais.
 
 % ---------------------------------------------------------------
+
+% \section{Cronograma de trabalho}
+% \label{sec:cronograma}
+
+% O cronograma a seguir apresenta as atividades previstas para o
+% desenvolvimento do TCC2, distribuídas ao longo de 16 semanas.
+% As atividades contemplam desde a preparação da base de dados e
+% implementação dos modelos até a realização dos experimentos,
+% análise dos resultados e elaboração da versão final do trabalho.
+
+% \begin{figure}[htb]
+%     \centering
+%     \caption{Cronograma de atividades -- Diagrama de Gantt}
+%     \label{fig:gantt}
+
+%     \begin{ganttchart}[
+%         hgrid,
+%         vgrid,
+%         x unit=0.72cm,
+%         y unit title=0.6cm,
+%         y unit chart=0.55cm,
+%         title height=1,
+%         bar height=0.45,
+%         bar label font=\scriptsize,
+%         title label font=\small,
+%         milestone label font=\scriptsize\itshape,
+%         group label font=\scriptsize\bfseries,
+%         bar/.append style={fill=blue!40},
+%         group/.append style={draw=black, fill=blue!70},
+%         milestone/.append style={fill=red!70}
+%     ]{1}{16}
+
+%         \gantttitle{Semanas}{16} \\
+%         \gantttitlelist{1,...,16}{1} \\
+
+%         % Fase 1: Planejamento
+%         \ganttgroup{Fase 1: Planejamento}{1}{3} \\
+%         \ganttbar{Revisão bibliográfica}{1}{3} \\
+%         \ganttbar{Definição do protocolo experimental}{1}{3} \\
+%         \ganttmilestone{Protocolo definido}{3} \\
+
+%         % Fase 2: Preparação dos dados
+%         \ganttgroup{Fase 2: Preparação dos dados}{4}{6} \\
+%         \ganttbar{Obtenção e exploração da base}{4}{5} \\
+%         \ganttbar{Pré-processamento dos sinais}{5}{6} \\
+%         \ganttmilestone{Base preparada}{6} \\
+
+%         % Fase 3: Implementação
+%         \ganttgroup{Fase 3: Implementação dos modelos}{7}{11} \\
+%         \ganttbar{Implementação da BiLSTM}{7}{8} \\
+%         \ganttbar{Implementação da CNN-BiLSTM}{8}{9} \\
+%         \ganttbar{Treinamento das quatro configurações}{10}{11} \\
+%         \ganttmilestone{Modelos implementados e treinados}{11} \\
+
+%         % Fase 4: Avaliação
+%         \ganttgroup{Fase 4: Avaliação experimental}{12}{14} \\
+%         \ganttbar{Avaliação pelas métricas de classificação}{12}{13} \\
+%         \ganttbar{Análise estatística dos resultados}{13}{14} \\
+%         \ganttbar{Comparação do custo computacional}{13}{14} \\
+%         \ganttmilestone{Experimentos concluídos}{14} \\
+
+%         % Fase 5: Finalização
+%         \ganttgroup{Fase 5: Finalização}{12}{16} \\
+%         \ganttbar{Redação dos resultados e discussão}{12}{15} \\
+%         \ganttbar{Ajustes e retreinamentos, se necessários}{14}{15} \\
+%         \ganttbar{Revisão e formatação do TCC}{15}{16} \\
+%         \ganttbar{Preparação da apresentação}{15}{16} \\
+%         \ganttmilestone{Entrega final}{16}
+
+%     \end{ganttchart}
+
+%     \fonte{Elaborado pelo autor (2026).}
+% \end{figure}
+
+
 \section{Cronograma de trabalho}
 \label{sec:cronograma}
 
@@ -494,74 +677,78 @@ O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades 
         group/.append style={draw=black, fill=blue!70},
         milestone/.append style={fill=red!70},
     ]{1}{16}
-        % Título: semanas de 1 a 16
+
         \gantttitle{Semanas}{16} \\
         \gantttitlelist{1,...,16}{1} \\
 
-        % Grupo 1: Revisão e Planejamento
-        \ganttgroup{Fase 1: Planejamento}{1}{4} \\
+        % Fase 1: Planejamento
+        \ganttgroup{Fase 1: Planejamento}{1}{3} \\
         \ganttbar{Revisão bibliográfica}{1}{3} \\
-        \ganttbar{Definição de requisitos}{2}{4} \\
-        \ganttbar{Projeto da arquitetura}{3}{4} \\
-        \ganttmilestone{Entrega do projeto}{4} \\
+        \ganttbar{Definição do protocolo experimental}{1}{3} \\
+        \ganttmilestone{Protocolo definido}{3} \\
 
-        % Grupo 2: Desenvolvimento
-        \ganttgroup{Fase 2: Desenvolvimento}{5}{11} \\
-        \ganttbar{Implementação do módulo 1}{5}{7} \\
-        \ganttbar{Implementação do módulo 2}{7}{9} \\
-        \ganttbar{Integração dos módulos}{9}{11} \\
-        \ganttmilestone{Protótipo funcional}{11} \\
+        % Fase 2: Preparação dos dados
+        \ganttgroup{Fase 2: Preparação dos dados}{4}{6} \\
+        \ganttbar{Obtenção e exploração da base}{4}{5} \\
+        \ganttbar{Pré-processamento dos sinais}{5}{6} \\
+        \ganttmilestone{Base preparada}{6} \\
 
-        % Grupo 3: Testes e Finalização
-        \ganttgroup{Fase 3: Validação}{12}{16} \\
-        \ganttbar{Testes e validação}{12}{14} \\
-        \ganttbar{Ajustes e correções}{14}{15} \\
-        \ganttbar{Redação final do TCC2}{13}{16} \\
+        % Fase 3: Implementação
+        \ganttgroup{Fase 3: Implementação dos modelos}{7}{11} \\
+        \ganttbar{Implementação da BiLSTM}{7}{8} \\
+        \ganttbar{Implementação da CNN-BiLSTM}{8}{9} \\
+        \ganttbar{Treinamento das quatro configurações}{10}{11} \\
+        \ganttmilestone{Modelos implementados e treinados}{11} \\
+
+        % Fase 4: Avaliação
+        \ganttgroup{Fase 4: Avaliação experimental}{12}{14} \\
+        \ganttbar{Avaliação pelas métricas de classificação}{12}{13} \\
+        \ganttbar{Análise estatística dos resultados}{13}{14} \\
+        \ganttbar{Comparação do custo computacional}{13}{14} \\
+        \ganttmilestone{Experimentos concluídos}{14} \\
+
+        % Fase 5: Finalização
+        \ganttgroup{Fase 5: Finalização}{12}{16} \\
+        \ganttbar{Redação dos resultados e discussão}{12}{15} \\
+        \ganttbar{Ajustes e retreinamentos, se necessários}{14}{15} \\
+        \ganttbar{Revisão e formatação do TCC}{15}{16} \\
+        \ganttbar{Preparação da apresentação}{15}{16} \\
         \ganttmilestone{Entrega final}{16}
-
-        % Ligações entre atividades
-        \ganttlink{elem2}{elem3}
-        \ganttlink{elem3}{elem4}
-        \ganttlink{elem4}{elem5}
-        \ganttlink{elem7}{elem8}
-        \ganttlink{elem8}{elem9}
-        \ganttlink{elem9}{elem10}
-        \ganttlink{elem12}{elem13}
     \end{ganttchart}
-    \legend{Fonte: Elaborado pelo autor (2025)}
+    \legend{Fonte: Elaborado pelo autor (2026).}
 \end{figure}
 
-\textbf{Instruções para personalização do cronograma}:
-\begin{itemize}
-    \item Ajuste o número de semanas conforme o calendário acadêmico do semestre;
-    \item Modifique as atividades de acordo com as etapas do seu projeto;
-    \item Os marcos (\textit{milestones}) indicam entregas importantes --- adapte-os às datas de avaliação;
-    \item As setas entre atividades indicam dependências --- uma atividade só inicia após a conclusão da anterior;
-    \item Utilize o diagrama como ferramenta de acompanhamento: atualize-o a cada reunião com o orientador.
-\end{itemize}
+%\textbf{Instruções para personalização do cronograma}:
+%\begin{itemize}
+%    \item Ajuste o número de semanas conforme o calendário acadêmico do semestre;
+%    \item Modifique as atividades de acordo com as etapas do seu projeto;
+%    \item Os marcos (\textit{milestones}) indicam entregas importantes --- adapte-os às datas de avaliação;
+%    \item As setas entre atividades indicam dependências --- uma atividade só inicia após a conclusão da anterior;
+%    \item Utilize o diagrama como ferramenta de acompanhamento: atualize-o a cada reunião com o orientador.
+%\end{itemize}
 
 % ---------------------------------------------------------------
-\section{Apresentação oral (banca)}
-\label{sec:apresentacao}
+% \section{Apresentação oral (banca)}
+% \label{sec:apresentacao}
 
-Além do documento escrito, o TCC1 é avaliado por uma \textbf{apresentação oral} perante a banca. Um template pronto em \texttt{Beamer} está disponível no arquivo \texttt{apresentacao\_tcc1.tex}, na mesma pasta deste documento.
+% Além do documento escrito, o TCC1 é avaliado por uma \textbf{apresentação oral} perante a banca. Um template pronto em \texttt{Beamer} está disponível no arquivo \texttt{apresentacao\_tcc1.tex}, na mesma pasta deste documento.
 
-\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
-\textbf{Regras da apresentação do TCC1}
+% \noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+% \textbf{Regras da apresentação do TCC1}
 
-\vspace{0.2cm}
-\begin{itemize}
-    \item \textbf{Duração: 20 minutos.} Cronometre os ensaios; ultrapassar o tempo é penalizado. Reserve uma margem de 2 a 3 minutos para perguntas da banca dentro desse total.
-    \item \textbf{Siga a mesma estrutura do documento escrito}, nesta ordem: Introdução (contexto, justificativa, objetivos), Referencial Bibliográfico (metodologia da pesquisa, referencial, trabalhos relacionados) e Desenvolvimento (solução proposta e cronograma).
-    \item \textbf{Ritmo:} cerca de 1 a 1,5 minuto por slide, totalizando aproximadamente 14 a 18 slides de conteúdo (fora capa, roteiro e encerramento).
-    \item \textbf{Logo do SENAC:} grande no primeiro slide (capa) e pequena no canto superior direito dos demais slides --- já configurado no template.
-    \item \textbf{Conteúdo dos slides:} poucos tópicos por slide, frases curtas; prefira diagramas, tabelas e imagens a parágrafos longos.
-    \item \textbf{Slides de apoio (backup):} inclua slides extras após o ``Obrigado'' com detalhes técnicos e tabelas completas para responder à banca.
-\end{itemize}
+% \vspace{0.2cm}
+% \begin{itemize}
+%     \item \textbf{Duração: 20 minutos.} Cronometre os ensaios; ultrapassar o tempo é penalizado. Reserve uma margem de 2 a 3 minutos para perguntas da banca dentro desse total.
+%     \item \textbf{Siga a mesma estrutura do documento escrito}, nesta ordem: Introdução (contexto, justificativa, objetivos), Referencial Bibliográfico (metodologia da pesquisa, referencial, trabalhos relacionados) e Desenvolvimento (solução proposta e cronograma).
+%     \item \textbf{Ritmo:} cerca de 1 a 1,5 minuto por slide, totalizando aproximadamente 14 a 18 slides de conteúdo (fora capa, roteiro e encerramento).
+%     \item \textbf{Logo do SENAC:} grande no primeiro slide (capa) e pequena no canto superior direito dos demais slides --- já configurado no template.
+%     \item \textbf{Conteúdo dos slides:} poucos tópicos por slide, frases curtas; prefira diagramas, tabelas e imagens a parágrafos longos.
+%     \item \textbf{Slides de apoio (backup):} inclua slides extras após o ``Obrigado'' com detalhes técnicos e tabelas completas para responder à banca.
+% \end{itemize}
 
-\vspace{0.2cm}
-\textbf{Distribuição de tempo sugerida (20 min):} Introdução $\approx$ 5 min; Referencial Bibliográfico $\approx$ 5 min; Desenvolvimento $\approx$ 7 min; encerramento $\approx$ 3 min.
-}}
+% \vspace{0.2cm}
+% \textbf{Distribuição de tempo sugerida (20 min):} Introdução $\approx$ 5 min; Referencial Bibliográfico $\approx$ 5 min; Desenvolvimento $\approx$ 7 min; encerramento $\approx$ 3 min.
+% }}
 
 % ---------------------------------------------------------------
 % ELEMENTOS PÓS-TEXTUAIS
