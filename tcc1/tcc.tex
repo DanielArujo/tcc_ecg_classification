@@ -397,31 +397,120 @@ Cross-Entropy e Focal Loss por meio de métricas de desempenho e custo computaci
 \chapter{Referencial Bibliográfico}
 \label{cap:referencial}
 
-Este capítulo apresenta os fundamentos necessários para a classificação automática de fibrilação atrial em sinais de eletrocardiograma. Inicialmente, descreve-se como os estudos foram selecionados. Em seguida, são apresentados os conceitos relacionados ao ECG, às arquiteturas de aprendizado profundo, ao desbalanceamento de classes e às funções de perda. Por fim, são discutidos trabalhos que investigaram problemas próximos ao desta pesquisa.
+Este capítulo reúne os fundamentos clínicos e computacionais necessários à comparação entre as arquiteturas CNN-BiLSTM e BiLSTM na classificação de registros de eletrocardiograma (ECG). A Seção~\ref{sec:metodologia_bibliografica} descreve o levantamento das fontes; a Seção~\ref{sec:referencial} apresenta os conceitos utilizados no estudo; e a Seção~\ref{sec:trabalhos_relacionados} examina pesquisas que enfrentaram um problema próximo ao deste trabalho.
 
-% ---------------------------------------------------------------
 \section{Metodologia da pesquisa bibliográfica}
-\label{sec:metodologia_pesquisa}
+\label{sec:metodologia_bibliografica}
 
-Para esta versão inicial, foi realizado um levantamento bibliográfico exploratório no PubMed, no repositório PhysioNet e nos portais das publicações Computing in Cardiology e BMC Medical Informatics and Decision Making. Foram pesquisadas combinações dos termos em inglês “atrial fibrillation”, “ECG classification”, “convolutional recurrent neural network”, “BiLSTM”, “class imbalance” e “focal loss”.
-Foram examinadas publicações em inglês de 2017 a 2024. Para a seleção dos trabalhos relacionados, deu-se prioridade a estudos originais que classificaram fibrilação atrial em registros de ECG e descreveram as arquiteturas e os dados utilizados. Estudos sobre outras tarefas, como a classificação de batimentos isolados, foram considerados para fundamentar conceitos técnicos, mas não escolhidos como trabalhos diretamente relacionados. Após a leitura dos títulos e resumos, foram selecionados três estudos com aplicação ao conjunto PhysioNet/CinC Challenge 2017 para uma análise inicial mais detalhada.
+Foi realizado um levantamento bibliográfico exploratório de publicações sobre classificação de fibrilação atrial (FA) em ECG de uma derivação, arquiteturas recorrentes e convolucionais, funções de perda e avaliação em dados desbalanceados. Foram consultados registros do PubMed, materiais do repositório PhysioNet e artigos publicados nos anais \textit{Computing in Cardiology} e no periódico \textit{BMC Medical Informatics and Decision Making}. As buscas exploratórias utilizaram, entre outras, as seguintes combinações de termos em inglês:
+\begin{itemize}
+    \item \textit{``atrial fibrillation'' AND ``single-lead ECG'' AND ``deep learning''};
+    \item \textit{``focal loss'' AND ``ECG'' AND ``class imbalance''};
+    \item \textit{``atrial fibrillation'' AND ``CNN'' AND ``BiLSTM''}.
+\end{itemize}
 
-% ---------------------------------------------------------------
+Para a seção de trabalhos relacionados, foram priorizados artigos originais em inglês publicados entre 2017 e 2024 que abordassem a classificação de FA em registros de ECG, apresentassem a arquitetura e o protocolo de avaliação e utilizassem preferencialmente o conjunto PhysioNet/Computing in Cardiology Challenge 2017. A seleção inicial considerou títulos e resumos; em seguida, foram examinados os métodos e resultados dos três trabalhos mais próximos do problema. Estudos restritos à classificação de batimentos individuais, sem avaliação do ritmo do registro, não foram usados como trabalhos diretamente relacionados. Para fundamentar os conceitos, foram incluídas também publicações anteriores a 2017, como os trabalhos originais sobre LSTM, recorrência bidirecional e avaliação de classificadores desbalanceados.
+
+Este levantamento tem caráter exploratório: a seleção dos três trabalhos permite contextualizar a proposta, mas não constitui uma revisão sistemática nem pretende enumerar todos os estudos existentes. A comparação quantitativa entre os resultados publicados exige atenção às diferenças de classes, divisões da base e métricas empregadas.
+
 \section{Referencial}
 \label{sec:referencial}
 
-\subsection{Trabalho 1: Convolutional Recurrent Neural Networks for Electrocardiogram Classification}
+\subsection{Eletrocardiograma e fibrilação atrial}
+\label{subsec:ecg_fa}
 
-Zihlmann 2017 investigaram a classificação de registros de ECG no conjunto PhysioNet/CinC Challenge 2017. Os autores compararam uma rede convolucional com uma arquitetura que combina camadas convolucionais e LSTM. A segunda obteve F1 de 82,1\% no conjunto de teste oculto do desafio. Esse estudo é próximo ao presente TCC porque também compara arquiteturas para classificação de fibrilação atrial. O recorte proposto aqui acrescenta a comparação entre Cross-Entropy e Focal Loss sob as mesmas condições experimentais.
+O ECG registra a atividade elétrica cardíaca ao longo do tempo. Na avaliação do ritmo, a fibrilação atrial está associada à ausência de ondas P discerníveis e repetitivas e à irregularidade da ativação ventricular, observável na variação dos intervalos RR entre batimentos. Esses indícios precisam ser interpretados no contexto do traçado, pois irregularidades também podem ocorrer em outros ritmos e o ruído pode prejudicar a análise \cite{sec2VanGelder2024,sec2Clifford2017}.
 
-\subsection{Trabalho 2: ECG signal classification for the detection of cardiac arrhythmias using a convolutional recurrent neural network}
+O PhysioNet/Computing in Cardiology Challenge 2017 disponibilizou registros curtos de ECG de uma derivação, classificados como ritmo normal, fibrilação atrial, outro ritmo ou ruidoso. O conjunto público de treinamento possui 8.528 registros: 5.154 normais, 771 com FA, 2.557 de outros ritmos e 46 ruidosos \cite{sec2Clifford2017}. O recorte deste TCC considera apenas normal e FA, totalizando 5.925 registros antes da divisão em treino, validação e teste. A razão entre as duas classes nesse recorte é aproximadamente 6,7 para 1, o que caracteriza o desbalanceamento a ser investigado. Os resultados obtidos nesse problema binário não podem ser tratados como pontuação oficial do desafio, que considera outras categorias.
 
-Xiong et al. propuseram a RhythmNet, uma rede convolucional recorrente para classificar diferentes ritmos em ECG, incluindo fibrilação atrial. O modelo foi treinado com registros do PhysioNet/CinC Challenge 2017, e os autores relataram um resultado F1 de 82\% para a classificação de ritmo normal, fibrilação atrial e outros ritmos no teste utilizado no estudo. Esse trabalho ajuda a fundamentar a escolha de uma arquitetura CNN-RNN, embora tenha uma tarefa com mais classes do que a classificação binária prevista neste TCC.
+\subsection{Aprendizado profundo e redes convolucionais para ECG}
+\label{subsec:cnn_ecg}
 
-\subsection{Trabalho 3: ECG signal classification based on deep CNN and BiLSTM}
+Uma série temporal contém observações ordenadas; no ECG, a posição e a evolução dos padrões ao longo do registro são relevantes para a classificação do ritmo. No aprendizado profundo, as características úteis à tarefa podem ser aprendidas a partir dos dados. Redes convolucionais unidimensionais (CNN 1D) aplicam filtros ao longo do sinal para aprender características locais. Essa abordagem foi utilizada tanto isoladamente quanto em combinação com camadas recorrentes na classificação de ECG \cite{sec2Goodfellow2016,sec2Zihlmann2017,sec2Xiong2018}.
 
-Cheng, Zou e Zhao (2021) desenvolveram um modelo que combina CNN e BiLSTM para classificar sinais de ECG. Os autores utilizaram dados do PhysioNet/CinC Challenge 2017 e relataram acurácia de 89,3\% e F1 de 0,891 em validação cruzada. O estudo é relevante por empregar BiLSTM na análise temporal do ECG. Seus números não devem ser comparados diretamente aos dos dois artigos anteriores, pois os procedimentos de avaliação diferem. No presente TCC, a proposta é avaliar as arquiteturas e as duas funções de perda dentro de um mesmo protocolo.
+\subsection{Redes recorrentes, LSTM e BiLSTM}
+\label{subsec:rnn_bilstm}
 
+Redes neurais recorrentes (RNN) processam uma sequência mantendo uma representação que depende das posições já percorridas. Essa estrutura permite modelar relações temporais entre as características extraídas do ECG \cite{sec2Goodfellow2016,sec2Xiong2018}.
+
+As redes \textit{Long Short-Term Memory} (LSTM) foram propostas para lidar com dificuldades de aprendizagem de relações distantes em sequências por meio de mecanismos de memória controlados por portas \cite{sec2Hochreiter1997}. Em uma estrutura bidirecional, a sequência é processada em ambos os sentidos, de modo que a representação de uma posição pode incorporar informações anteriores e posteriores \cite{sec2Schuster1997}. A BiLSTM emprega células LSTM nessas duas direções; como este estudo classifica registros completos, os dois sentidos do sinal estão disponíveis no momento da predição \cite{sec2Cheng2021}.
+
+Neste trabalho, a BiLSTM processará diretamente a sequência de entrada, enquanto a CNN-BiLSTM terá uma etapa convolucional antes do bloco recorrente bidirecional. As duas propostas compartilham o tipo de componente temporal, permitindo investigar a contribuição da extração convolucional para a tarefa definida. Para interpretar essa comparação, o protocolo experimental deverá explicitar a forma de entrada, as dimensões das camadas e o número de parâmetros de cada rede.
+
+\subsection{Desbalanceamento de classes e funções de perda}
+\label{subsec:funcoes_perda}
+
+Em uma tarefa binária, o modelo atribui a cada registro uma probabilidade de pertencer à classe positiva, aqui definida como FA. Seja $y\in\{0,1\}$ o rótulo verdadeiro e $p\in(0,1)$ a probabilidade prevista para FA. A probabilidade atribuída à classe verdadeira é $p_t=p$ quando $y=1$ e $p_t=1-p$ quando $y=0$. A entropia cruzada binária para um exemplo pode então ser escrita como \cite{sec2Goodfellow2016,sec2Lin2017}
+\begin{equation}
+    \mathcal{L}_{\mathrm{CE}}(p_t)=-\log(p_t).
+    \label{eq:ce_binaria}
+\end{equation}
+
+Na entropia cruzada não ponderada, cada exemplo contribui segundo a probabilidade atribuída ao seu rótulo. Como a base contém mais registros normais que registros com FA, é necessário verificar empiricamente se o treinamento resultante reconhece adequadamente a classe menos frequente. A \textit{Focal Loss}, proposta inicialmente para enfrentar o predomínio de exemplos fáceis em detecção de objetos, acrescenta um fator que reduz a contribuição relativa dos exemplos bem classificados \cite{sec2Lin2017}:
+\begin{equation}
+    \mathcal{L}_{\mathrm{FL}}(p_t)=-\alpha_t(1-p_t)^{\gamma}\log(p_t),
+    \label{eq:focal_binaria}
+\end{equation}
+em que $\gamma\geq0$ controla a ênfase nos exemplos difíceis. Na variante com ponderação de classes, $\alpha_t=\alpha$ quando $y=1$ (FA) e $\alpha_t=1-\alpha$ quando $y=0$ (normal), para $\alpha\in[0,1]$ \cite{sec2Lin2017}. Sem ponderação, pode-se definir $\alpha_t=1$ para ambas as classes: nesse caso, $\gamma=0$ faz a Equação~\ref{eq:focal_binaria} coincidir com a entropia cruzada não ponderada da Equação~\ref{eq:ce_binaria}. Com pesos de classe, $\gamma=0$ produz a entropia cruzada ponderada. A Focal Loss não garante, por si só, melhor identificação de FA; essa hipótese será examinada nas quatro combinações entre arquitetura e função de perda.
+
+\subsection{Métricas para classificação desbalanceada}
+\label{subsec:metricas}
+
+Para avaliar as previsões, FA será considerada a classe positiva. Na matriz de confusão, verdadeiros positivos (VP) são registros com FA corretamente identificados, falsos negativos (FN) são registros com FA classificados como normais, falsos positivos (FP) são registros normais classificados como FA e verdadeiros negativos (VN) são registros normais corretamente classificados. A partir dessas quantidades, serão utilizadas as métricas
+\begin{align}
+    \text{Precisão} &= \frac{VP}{VP+FP}, \nonumber\\
+    \text{Revocação} &= \frac{VP}{VP+FN}, \nonumber\\
+    \text{Especificidade} &= \frac{VN}{VN+FP}, \nonumber\\
+    \text{Acurácia} &= \frac{VP+VN}{VP+VN+FP+FN}, \nonumber\\
+    F_1 &= \frac{2\,\text{Precisão}\,\text{Revocação}}{\text{Precisão}+\text{Revocação}}. \label{eq:metricas}
+\end{align}
+
+A revocação, também chamada sensibilidade, indica a fração dos registros com FA recuperada pelo modelo; a precisão informa a fração de previsões de FA que está correta. O $F_1$ sintetiza precisão e revocação, enquanto a especificidade descreve o acerto entre os registros normais. Como a acurácia pode ser elevada mesmo diante de dificuldades com a classe menos frequente, as métricas serão apresentadas em conjunto \cite{sec2Saito2015}.
+
+Também serão consideradas a área sob a curva ROC (AUC-ROC) e a área sob a curva precisão--revocação (AUC-PR), obtidas a partir de diferentes limiares de decisão. A curva precisão--revocação merece atenção particular na presença de desbalanceamento, pois torna visível a relação entre falsos positivos e a recuperação da classe FA \cite{sec2Saito2015}. Sua interpretação deverá levar em conta a proporção de FA no conjunto de teste.
+
+\section{Trabalhos relacionados}
+\label{sec:trabalhos_relacionados}
+
+Foram escolhidos três estudos que classificaram registros de ECG no contexto do PhysioNet/CinC Challenge 2017 e incluíram a fibrilação atrial entre as classes. Eles tratam de problema próximo ao deste TCC, embora utilizem mais categorias e protocolos distintos. Por isso, os resultados reportados a seguir caracterizam cada estudo e não constituem uma comparação numérica direta com a classificação binária proposta.
+
+\subsection{Zihlmann, Perekrestenko e Tschannen (2017)}
+\label{subsec:trab_zihlmann}
+
+\citeonline{sec2Zihlmann2017} investigaram a classificação de registros de ECG de duração variável e compararam uma rede convolucional a uma arquitetura que associa CNN a camadas LSTM. Os experimentos utilizaram o conjunto do PhysioNet/CinC Challenge 2017 e incluíram uma estratégia de aumento de dados. A arquitetura convolucional recorrente obteve $F_1$ de 82,1\% no conjunto de teste oculto do desafio, superando a arquitetura apenas convolucional no protocolo dos autores. O trabalho é pertinente por estudar a contribuição do processamento temporal após a extração de características; seu resultado, entretanto, envolve outra comparação arquitetural e a tarefa com as categorias do desafio. O presente TCC examinará CNN-BiLSTM e BiLSTM no mesmo recorte binário e cruzará ambas com as duas funções de perda.
+
+\subsection{Xiong et al. (2018)}
+\label{subsec:trab_xiong}
+
+\citeonline{sec2Xiong2018} propuseram a \textit{RhythmNet}, uma arquitetura convolucional recorrente para classificar ritmos de ECG, incluindo FA. Os autores treinaram o modelo com registros do desafio de 2017, usando camadas convolucionais para extrair características dos sinais e camadas recorrentes para processar a sequência. Foi relatado $F_1$ geral de aproximadamente 0,82 no conjunto de teste empregado no estudo. A contribuição desse artigo para a presente pesquisa é demonstrar uma aplicação de combinação convolucional e recorrente à classificação de ritmos. Como o trabalho avalia múltiplas classes, seu escore geral não mede diretamente o desempenho da tarefa binária normal versus FA nem isola o efeito da função de perda que será investigado neste TCC.
+
+\subsection{Cheng, Zou e Zhao (2021)}
+\label{subsec:trab_cheng}
+
+\citeonline{sec2Cheng2021} desenvolveram um modelo que combina CNN profunda e BiLSTM para classificação automática de ECG. O estudo utilizou a base do PhysioNet/CinC Challenge 2017, procedimentos de filtragem e uma função de perda proposta pelos autores. Em validação cruzada de dez partes, foram relatadas acurácia de 89,3\% e medida $F_1$ de 0,891. Esse estudo fundamenta a escolha de uma arquitetura com processamento bidirecional do sinal. Entretanto, seus resultados refletem a combinação de arquitetura, pré-processamento e função de perda própria; não respondem isoladamente se a etapa CNN melhora uma BiLSTM, nem como Cross-Entropy e Focal Loss se comportam nas duas arquiteturas sob as mesmas condições.
+
+A Tabela~\ref{tab:trabalhos_relacionados} resume os recortes metodológicos. A contribuição pretendida deste TCC é uma comparação experimental controlada no problema binário normal versus FA, com a presença da CNN e a escolha da função de perda como fatores. A diferença de classes e validações impede afirmar que um valor de $F_1$ publicado é superior a outro sem reproduzir os respectivos protocolos.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Comparação entre trabalhos relacionados e a proposta deste TCC}
+    \label{tab:trabalhos_relacionados}
+    \ABNTEXfontereduzida
+    \begin{tabular}{@{}p{2.8cm}p{5.0cm}p{5.0cm}@{}}
+        \toprule
+        \textbf{Estudo} & \textbf{Arquitetura e classes} & \textbf{Avaliação e relação com este TCC} \\
+        \midrule
+        Zihlmann et al. & CNN vs. CNN--LSTM; ritmos do CinC 2017 & Teste oculto; sem comparação CE/Focal \\
+        \addlinespace
+        Xiong et al. & CNN recorrente; ritmos do CinC 2017 & Teste do desafio; sem comparar BiLSTM isolada \\
+        \addlinespace
+        Cheng et al. & CNN + BiLSTM; ritmos do CinC 2017 & Validação cruzada; perda própria \\
+        \addlinespace
+        Este TCC & BiLSTM vs. CNN-BiLSTM; normal vs. FA & Mesmo protocolo; Cross-Entropy vs. Focal Loss \\
+        \bottomrule
+    \end{tabular}
+    \legend{Fonte: Elaborado pelos autores (2026), com base em \citeonline{sec2Zihlmann2017}, \citeonline{sec2Xiong2018} e \citeonline{sec2Cheng2021}.}
+\end{table}
 
 % ===============================================================
 % CAPÍTULO 3 - DESENVOLVIMENTO
