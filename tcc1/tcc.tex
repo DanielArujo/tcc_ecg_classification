@@ -679,19 +679,21 @@ Essa avaliação permitirá identificar a configuração que apresenta o melhor 
 
 
 
+
 \section{Cronograma de trabalho}
 \label{sec:cronograma}
 
-O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades previstas para o desenvolvimento do TCC2, distribuídas ao longo das semanas do semestre.
+O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades previstas para o desenvolvimento do TCC2, distribuídas entre fevereiro e junho de 2027.
 
 \begin{figure}[htb]
     \centering
     \caption{Cronograma de atividades -- Diagrama de Gantt}
     \label{fig:gantt}
+
     \begin{ganttchart}[
         hgrid,
         vgrid,
-        x unit=0.72cm,
+        x unit=1.45cm,
         y unit title=0.6cm,
         y unit chart=0.7cm,
         title height=1,
@@ -703,46 +705,53 @@ O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades 
         bar/.append style={fill=blue!40},
         group/.append style={draw=black, fill=blue!70},
         milestone/.append style={fill=red!70},
-    ]{1}{16}
+    ]{1}{5}
 
-        \gantttitle{Semanas}{16} \\
-        \gantttitlelist{1,...,16}{1} \\
+        \gantttitle{Meses de 2027}{5} \\
+
+        \gantttitle{Fevereiro}{1}
+        \gantttitle{Março}{1}
+        \gantttitle{Abril}{1}
+        \gantttitle{Maio}{1}
+        \gantttitle{Junho}{1} \\
 
         % Fase 1: Planejamento
-        \ganttgroup{Fase 1: Planejamento}{1}{3} \\
-        \ganttbar{Revisão bibliográfica}{1}{3} \\
-        \ganttbar{Definição do protocolo experimental}{1}{3} \\
-        \ganttmilestone{Protocolo definido}{3} \\
+        \ganttgroup{Fase 1: Planejamento}{1}{1} \\
+        \ganttbar{Revisão bibliográfica}{1}{2} \\
+        \ganttbar{Definição do protocolo experimental}{1}{1} \\
+        \ganttmilestone{Protocolo definido}{1} \\
 
         % Fase 2: Preparação dos dados
-        \ganttgroup{Fase 2: Preparação dos dados}{4}{6} \\
-        \ganttbar{Obtenção e exploração da base}{4}{5} \\
-        \ganttbar{Pré-processamento dos sinais}{5}{6} \\
-        \ganttmilestone{Base preparada}{6} \\
+        \ganttgroup{Fase 2: Preparação dos dados}{1}{2} \\
+        \ganttbar{Obtenção e exploração da base}{1}{1} \\
+        \ganttbar{Pré-processamento dos sinais}{1}{2} \\
+        \ganttmilestone{Base preparada}{2} \\
 
         % Fase 3: Implementação
-        \ganttgroup{Fase 3: Implementação dos modelos}{7}{11} \\
-        \ganttbar{Implementação da BiLSTM}{7}{8} \\
-        \ganttbar{Implementação da CNN-BiLSTM}{8}{9} \\
-        \ganttbar{Treinamento das quatro configurações}{10}{11} \\
-        \ganttmilestone{Modelos implementados e treinados}{11} \\
+        \ganttgroup{Fase 3: Implementação dos modelos}{2}{3} \\
+        \ganttbar{Implementação da BiLSTM}{2}{2} \\
+        \ganttbar{Implementação da CNN-BiLSTM}{2}{3} \\
+        \ganttbar{Treinamento das quatro configurações}{3}{3} \\
+        \ganttmilestone{Modelos implementados e treinados}{3} \\
 
         % Fase 4: Avaliação
-        \ganttgroup{Fase 4: Avaliação experimental}{12}{14} \\
-        \ganttbar{Avaliação pelas métricas de classificação}{12}{13} \\
-        \ganttbar{Análise estatística dos resultados}{13}{14} \\
-        \ganttbar{Comparação do custo computacional}{13}{14} \\
-        \ganttmilestone{Experimentos concluídos}{14} \\
+        \ganttgroup{Fase 4: Avaliação experimental}{3}{4} \\
+        \ganttbar{Avaliação pelas métricas de classificação}{3}{4} \\
+        \ganttbar{Análise estatística dos resultados}{4}{4} \\
+        \ganttbar{Comparação do custo computacional}{3}{4} \\
+        \ganttmilestone{Experimentos concluídos}{4} \\
 
         % Fase 5: Finalização
-        \ganttgroup{Fase 5: Finalização}{12}{16} \\
-        \ganttbar{Redação dos resultados e discussão}{12}{15} \\
-        \ganttbar{Ajustes e retreinamentos, se necessários}{14}{15} \\
-        \ganttbar{Revisão e formatação do TCC}{15}{16} \\
-        \ganttbar{Preparação da apresentação}{15}{16} \\
-        \ganttmilestone{Entrega final}{16}
+        \ganttgroup{Fase 5: Finalização}{4}{5} \\
+        \ganttbar{Redação dos resultados e discussão}{4}{5} \\
+        \ganttbar{Ajustes e retreinamentos, se necessários}{4}{5} \\
+        \ganttbar{Revisão e formatação do TCC}{5}{5} \\
+        \ganttbar{Preparação da apresentação}{5}{5} \\
+        \ganttmilestone{Entrega final}{5}
+
     \end{ganttchart}
-    \legend{Fonte: Elaborado pelos autores (2026).}
+
+    \legend{Fonte: Elaborado pelos autores (2027).}
 \end{figure}
 
 %\textbf{Instruções para personalização do cronograma}:
