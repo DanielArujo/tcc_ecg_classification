@@ -145,12 +145,12 @@
 % RESUMO
 % ---------------------------------------------------------------
 \begin{resumo}
-Este documento apresenta a proposta inicial do Trabalho de Conclusão de Curso (TCC1) desenvolvido no SENAC Santo Amaro. O objetivo deste trabalho é [descrever brevemente o objetivo principal do TCC]. A justificativa para este estudo baseia-se em [descrever brevemente a justificativa]. O referencial bibliográfico abrange [mencionar os principais tópicos]. Como solução proposta, pretende-se [descrever brevemente a solução]. Este trabalho está organizado em capítulos que apresentam a introdução ao tema, o referencial bibliográfico que fundamenta a pesquisa, o desenvolvimento com a solução proposta e o cronograma de trabalho, seguidos das referências bibliográficas.
+Este trabalho tem como objetivo analisar e comparar as arquiteturas de aprendizado profundo CNN-BiLSTM e BiLSTM na classificação de fibrilação atrial (FA) em sinais de eletrocardiograma (ECG), considerando o uso das funções de perda Cross-Entropy e Focal Loss. A justificativa para este estudo baseia-se na necessidade de investigar diferentes abordagens de aprendizado profundo para a classificação automática de sinais cardíacos, especialmente diante do desbalanceamento entre as classes presentes nos conjuntos de dados. O referencial bibliográfico abrange o processamento de sinais de ECG, a fibrilação atrial, redes neurais convolucionais, redes BiLSTM, funções de perda e métricas de avaliação de modelos de classificação. Como solução proposta, pretende-se desenvolver um estudo experimental utilizando o conjunto de dados PhysioNet/CinC Challenge 2017, comparando quatro configurações que combinam as duas arquiteturas com as duas funções de perda. A avaliação considerará métricas de desempenho da classificação e aspectos de custo computacional, como tempo de treinamento, tempo de inferência e quantidade de parâmetros. Este trabalho está organizado em capítulos que apresentam a introdução ao tema, o referencial bibliográfico que fundamenta a pesquisa, o desenvolvimento com a solução proposta e o cronograma de trabalho, seguidos das referências bibliográficas.
 
 \vspace{\onelineskip}
 
 \noindent
-\textbf{Palavras-chave}: palavra1. palavra2. palavra3. palavra4. palavra5.
+\textbf{Palavras-chave}: Eletrocardiograma. Fibrilação atrial. Aprendizado profundo. CNN-BiLSTM. BiLSTM.
 \end{resumo}
 
 % ---------------------------------------------------------------
@@ -176,10 +176,14 @@ Este documento apresenta a proposta inicial do Trabalho de Conclusão de Curso (
 % Esta lista deve vir antes do início do trabalho (elementos pré-textuais).
 % Em ordem alfabética, relacione APENAS as abreviaturas e siglas que
 % realmente aparecem no texto. Edite a tabela conforme o seu trabalho.
+ 
+
+
 \pdfbookmark[0]{Lista de Abreviaturas e Siglas}{loas}
 \chapter*{Lista de Abreviaturas e Siglas}
 
-\noindent A lista a seguir reúne, em ordem alfabética, as abreviaturas e siglas utilizadas neste trabalho, acompanhadas de seus respectivos significados. Substitua, acrescente ou remova linhas conforme a necessidade do seu projeto.
+\noindent
+A lista a seguir reúne as abreviaturas e siglas utilizadas neste trabalho, acompanhadas de seus respectivos significados.
 
 \vspace{\onelineskip}
 
@@ -188,13 +192,23 @@ Este documento apresenta a proposta inicial do Trabalho de Conclusão de Curso (
 \toprule
 \textbf{Abreviatura/Sigla} & \textbf{Significado} \\
 \midrule
-ABNT  & Associação Brasileira de Normas Técnicas \\
-API   & \textit{Application Programming Interface} (Interface de Programação de Aplicações) \\
-HTTP  & \textit{Hypertext Transfer Protocol} \\
-REST  & \textit{Representational State Transfer} \\
-SQL   & \textit{Structured Query Language} \\
-TCC   & Trabalho de Conclusão de Curso \\
-UML   & \textit{Unified Modeling Language} \\
+AUC & \textit{Area Under the Curve} (Área sob a Curva) \\
+
+CNN & \textit{Convolutional Neural Network} (Rede Neural Convolucional) \\
+
+ECG & Eletrocardiograma \\
+
+FA & Fibrilação Atrial \\
+
+F1-score & Medida harmônica entre precisão e revocação \\
+
+BiLSTM & \textit{Bidirectional Long Short-Term Memory} \\
+
+LSTM & \textit{Long Short-Term Memory} \\
+
+ROC & \textit{Receiver Operating Characteristic} \\
+
+
 \bottomrule
 \end{tabular}
 \end{center}
@@ -248,7 +262,7 @@ pode ajudar a compreender seus efeitos em diferentes arquiteturas de classifica�
 
 Dessa forma, este trabalho propõe uma comparação experimental entre as arquiteturas CNN-BiLSTM e BiLSTM, 
 considerando as funções de perda Cross-Entropy e Focal Loss. O estudo será realizado sobre a classificação 
-binária entre ritmo normal e fibrilação atrial, buscando analisar tanto o desempenho dos modelos quanto seu custo computacional..
+binária entre ritmo normal e fibrilação atrial, buscando analisar tanto o desempenho dos modelos quanto seu custo computacional.
 %\vspace{0.3cm}
 %\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
 %\textbf{Orientação sobre a linguagem da introdução}
@@ -368,8 +382,6 @@ Cross-Entropy e Focal Loss por meio de métricas de desempenho e custo computaci
 
 \subsection{Objetivos secundários}
 
-Os objetivos secundários são desdobramentos do objetivo principal. Eles descrevem as etapas ou ações necessárias para atingir o objetivo principal. Devem ser mensuráveis e verificáveis.
-
 \begin{enumerate}
     \item Realizar o pré-processamento dos sinais de ECG do conjunto PhysioNet/CinC 2017, considerando as classes Normal e Fibrilação Atrial;
     \item Implementar e treinar as duas arquiteturas propostas, CNN-BiLSTM e BiLSTM, utilizando as funções de perda Cross-Entropy e Focal Loss;
@@ -451,7 +463,7 @@ A Figura~\ref{fig:arquitetura} apresenta uma representação geral do fluxo prop
     \caption{Arquitetura proposta para o sistema de classificação de sinais ECG.}
     \label{fig:arquitetura}
     \includegraphics[width=0.75\textwidth]{assets/arquitetura.png}
-    \legend{Fonte: Elaborado pelo autor (2026)}
+    \legend{Fonte: Elaborado pelos autores (2026)}
 \end{figure}
 
 Conforme apresentado na Figura~\ref{fig:arquitetura}, inicialmente serão obtidos os registros de ECG da base PhysioNet/CinC Challenge 2017. 
@@ -520,7 +532,7 @@ A combinação desses fatores resultará em quatro configurações experimentais
         BiLSTM     & E3 & E4 \\
         \hline
     \end{tabular}
-    \fonte{Elaborado pelo autor (2026).}
+    \fonte{Elaborado pelos autores (2026).}
 \end{table}
 
 A função Cross-Entropy será utilizada como referência para o treinamento dos modelos, enquanto a Focal Loss será investigada como alternativa 
@@ -576,80 +588,6 @@ Essa avaliação permitirá identificar a configuração que apresenta o melhor 
 
 %Toda figura deve ser numerada, ter legenda (\verb|\caption|) e indicação de fonte, além de ser citada no texto --- por exemplo, a Figura~\ref{fig:arquitetura}. As figuras com legenda aparecem automaticamente na \textit{Lista de ilustrações}, nos elementos pré-textuais.
 
-% ---------------------------------------------------------------
-
-% \section{Cronograma de trabalho}
-% \label{sec:cronograma}
-
-% O cronograma a seguir apresenta as atividades previstas para o
-% desenvolvimento do TCC2, distribuídas ao longo de 16 semanas.
-% As atividades contemplam desde a preparação da base de dados e
-% implementação dos modelos até a realização dos experimentos,
-% análise dos resultados e elaboração da versão final do trabalho.
-
-% \begin{figure}[htb]
-%     \centering
-%     \caption{Cronograma de atividades -- Diagrama de Gantt}
-%     \label{fig:gantt}
-
-%     \begin{ganttchart}[
-%         hgrid,
-%         vgrid,
-%         x unit=0.72cm,
-%         y unit title=0.6cm,
-%         y unit chart=0.55cm,
-%         title height=1,
-%         bar height=0.45,
-%         bar label font=\scriptsize,
-%         title label font=\small,
-%         milestone label font=\scriptsize\itshape,
-%         group label font=\scriptsize\bfseries,
-%         bar/.append style={fill=blue!40},
-%         group/.append style={draw=black, fill=blue!70},
-%         milestone/.append style={fill=red!70}
-%     ]{1}{16}
-
-%         \gantttitle{Semanas}{16} \\
-%         \gantttitlelist{1,...,16}{1} \\
-
-%         % Fase 1: Planejamento
-%         \ganttgroup{Fase 1: Planejamento}{1}{3} \\
-%         \ganttbar{Revisão bibliográfica}{1}{3} \\
-%         \ganttbar{Definição do protocolo experimental}{1}{3} \\
-%         \ganttmilestone{Protocolo definido}{3} \\
-
-%         % Fase 2: Preparação dos dados
-%         \ganttgroup{Fase 2: Preparação dos dados}{4}{6} \\
-%         \ganttbar{Obtenção e exploração da base}{4}{5} \\
-%         \ganttbar{Pré-processamento dos sinais}{5}{6} \\
-%         \ganttmilestone{Base preparada}{6} \\
-
-%         % Fase 3: Implementação
-%         \ganttgroup{Fase 3: Implementação dos modelos}{7}{11} \\
-%         \ganttbar{Implementação da BiLSTM}{7}{8} \\
-%         \ganttbar{Implementação da CNN-BiLSTM}{8}{9} \\
-%         \ganttbar{Treinamento das quatro configurações}{10}{11} \\
-%         \ganttmilestone{Modelos implementados e treinados}{11} \\
-
-%         % Fase 4: Avaliação
-%         \ganttgroup{Fase 4: Avaliação experimental}{12}{14} \\
-%         \ganttbar{Avaliação pelas métricas de classificação}{12}{13} \\
-%         \ganttbar{Análise estatística dos resultados}{13}{14} \\
-%         \ganttbar{Comparação do custo computacional}{13}{14} \\
-%         \ganttmilestone{Experimentos concluídos}{14} \\
-
-%         % Fase 5: Finalização
-%         \ganttgroup{Fase 5: Finalização}{12}{16} \\
-%         \ganttbar{Redação dos resultados e discussão}{12}{15} \\
-%         \ganttbar{Ajustes e retreinamentos, se necessários}{14}{15} \\
-%         \ganttbar{Revisão e formatação do TCC}{15}{16} \\
-%         \ganttbar{Preparação da apresentação}{15}{16} \\
-%         \ganttmilestone{Entrega final}{16}
-
-%     \end{ganttchart}
-
-%     \fonte{Elaborado pelo autor (2026).}
-% \end{figure}
 
 
 \section{Cronograma de trabalho}
@@ -715,7 +653,7 @@ O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades 
         \ganttbar{Preparação da apresentação}{15}{16} \\
         \ganttmilestone{Entrega final}{16}
     \end{ganttchart}
-    \legend{Fonte: Elaborado pelo autor (2026).}
+    \legend{Fonte: Elaborado pelos autores (2026).}
 \end{figure}
 
 %\textbf{Instruções para personalização do cronograma}:
