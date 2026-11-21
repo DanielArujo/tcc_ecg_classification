@@ -551,7 +551,7 @@ A Figura~\ref{fig:arquitetura} apresenta uma representação geral do fluxo prop
     \centering
     \caption{Arquitetura proposta para o sistema de classificação de sinais ECG.}
     \label{fig:arquitetura}
-    \includegraphics[width=0.75\textwidth]{assets/arquitetura.png}
+    \includegraphics[width=0.75\textwidth]{assets/fluxograma_tcc.jpg}
     \legend{Fonte: Elaborado pelos autores (2026)}
 \end{figure}
 
@@ -607,22 +607,45 @@ O primeiro fator será composto pelas arquiteturas CNN-BiLSTM e BiLSTM. O segund
 A combinação desses fatores resultará em quatro configurações experimentais, conforme apresentado na Tabela ~\ref{tab:desenho_fatorial}.
 
 
-\begin{table}[htb]
+% \begin{table}[htb]
+%     \centering
+%     \caption{Desenho fatorial 2 $\times$ 2 dos experimentos}
+%     \label{tab:desenho_fatorial}
+%     \begin{tabular}{lcc}
+%         \hline
+%         \textbf{Arquitetura} &
+%         \textbf{Cross-Entropy} &
+%         \textbf{Focal Loss} \\
+%         \hline
+%         CNN-BiLSTM & E1 & E2 \\
+%         BiLSTM     & E3 & E4 \\
+%         \hline
+%     \end{tabular}
+%     \fonte{Elaborado pelos autores (2026).}
+% \end{table}
+
+
+\begin{table}[htbp]
     \centering
     \caption{Desenho fatorial 2 $\times$ 2 dos experimentos}
     \label{tab:desenho_fatorial}
+    \ABNTEXfontereduzida
+
     \begin{tabular}{lcc}
-        \hline
+        \toprule
         \textbf{Arquitetura} &
         \textbf{Cross-Entropy} &
         \textbf{Focal Loss} \\
-        \hline
+        \midrule
         CNN-BiLSTM & E1 & E2 \\
-        BiLSTM     & E3 & E4 \\
-        \hline
+        \addlinespace
+        BiLSTM & E3 & E4 \\
+        \bottomrule
     \end{tabular}
-    \fonte{Elaborado pelos autores (2026).}
+
+    \legend{Fonte: Elaborado pelos autores (2026).}
 \end{table}
+
 
 A função Cross-Entropy será utilizada como referência para o treinamento dos modelos, enquanto a Focal Loss será investigada como alternativa 
 para lidar com o desbalanceamento entre as classes, atribuindo maior importância aos exemplos classificados com maior dificuldade.
