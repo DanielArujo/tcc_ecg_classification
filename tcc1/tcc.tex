@@ -340,33 +340,30 @@ perda sob condições experimentais controladas constitui uma forma de investiga
 % ---------------------------------------------------------------
 \section{Justificativa}
 \label{sec:justificativa}
-A justificativa acadêmica deste estudo está relacionada à necessidade de 
-comparar diferentes abordagens de aprendizado profundo aplicadas à classificação 
-de sinais de ECG. A escolha das arquiteturas CNN-BiLSTM e BiLSTM permite investigar 
-a contribuição da etapa convolucional na extração de características dos sinais. 
-Enquanto a BiLSTM realiza o processamento das informações temporais considerando as 
-duas direções da sequência, a CNN-BiLSTM acrescenta camadas convolucionais capazes de 
-identificar padrões locais antes desse processamento. Como ambas utilizam a estrutura 
-BiLSTM, essa comparação permite analisar se a inclusão da CNN apresenta benefícios para a 
-classificação de fibrilação atrial, mantendo uma base recorrente comum entre as abordagens.
+A justificativa acadêmica deste estudo está relacionada à importância de investigar diferentes abordagens de 
+aprendizado profundo aplicadas à classificação de fibrilação atrial em sinais de eletrocardiograma. 
+Embora estudos anteriores apresentem resultados utilizando arquiteturas convolucionais, recorrentes e 
+híbridas, as diferenças entre conjuntos de dados, classes consideradas e procedimentos de validação dificultam 
+a comparação direta dos desempenhos apresentados \cite{Efe2024,Almousa2023,Albarrak2025}. Dessa forma, torna-se 
+relevante investigar essas abordagens sob condições experimentais comparáveis.
 
-Além da comparação entre as arquiteturas, será realizado um experimento fatorial 2 $\times$ 2, 
-combinando CNN-BiLSTM e BiLSTM com as funções de perda Cross-Entropy e Focal Loss. Essa organização 
-permitirá analisar separadamente os efeitos da arquitetura e da função de perda, além de investigar se 
-existe interação entre esses fatores. O desempenho será avaliado por meio de métricas como Accuracy, Precision, 
-Recall, Specificity e F1-score, considerando especialmente a identificação da classe minoritária de fibrilação atrial.
+Nesse contexto, a escolha das arquiteturas CNN-BiLSTM e BiLSTM busca investigar a contribuição da extração de 
+características locais realizada pelas camadas convolucionais. Enquanto a BiLSTM processa informações temporais 
+considerando as duas direções da sequência, a CNN-BiLSTM incorpora uma etapa convolucional antes desse processamento. 
+Como ambas utilizam uma estrutura recorrente bidirecional, sua comparação permite analisar a possível contribuição 
+dessa etapa adicional para a identificação de fibrilação atrial.
 
-Do ponto de vista prático e profissional, o trabalho busca analisar 
-não apenas o desempenho dos modelos na classificação entre ritmo normal e fibrilação atrial, 
-mas também seu custo computacional. Para isso, serão considerados fatores como tempo de treinamento, 
-tempo de inferência e número de parâmetros. Dessa forma, será possível comparar as abordagens 
-considerando tanto sua capacidade de classificação quanto os recursos computacionais necessários para sua execução.
+Outra questão relevante está relacionada ao desbalanceamento entre as classes de ritmo normal e fibrilação atrial. 
+A menor quantidade de registros de fibrilação atrial pode dificultar a identificação dessa classe pelos modelos. 
+Nesse cenário, investigar a influência das funções de perda Cross-Entropy e Focal Loss é importante para compreender 
+se diferentes estratégias de aprendizado contribuem para melhorar a classificação da classe minoritária.
 
-Por fim, estudos anteriores apresentam diferentes combinações de arquiteturas, funções de perda e 
-técnicas de processamento para a classificação de ECG \cite{Efe2024,Almousa2023,Albarrak2025}. Nesse 
-contexto, este trabalho busca realizar uma comparação sob condições experimentais controladas, mantendo 
-os mesmos dados, pré-processamento e condições de treinamento para os diferentes modelos. Com isso, 
-pretende-se identificar as diferenças de desempenho entre as arquiteturas CNN-BiLSTM e BiLSTM e entre as funções de perda Cross-Entropy e Focal Loss.
+Do ponto de vista prático, a pesquisa também se justifica pela necessidade de considerar os recursos computacionais 
+exigidos pelas arquiteturas. Modelos mais complexos podem apresentar custos adicionais de treinamento e inferência, 
+tornando relevante investigar se possíveis melhorias no desempenho são acompanhadas de maior demanda computacional. 
+Assim, a contribuição pretendida deste trabalho consiste em oferecer uma comparação experimental controlada entre 
+CNN-BiLSTM e BiLSTM, considerando diferentes funções de perda, a identificação de fibrilação atrial e o equilíbrio 
+entre desempenho e custo computacional.
 % ---------------------------------------------------------------
 \section{Objetivo}
 \label{sec:objetivo}
