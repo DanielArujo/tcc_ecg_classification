@@ -257,7 +257,7 @@ como ritmo normal e 771 como fibrilação atrial. Os registros possuem frequênc
 Nesse cenário, além da escolha da arquitetura, a função utilizada durante o treinamento também pode influenciar o comportamento 
 do modelo. A Cross-Entropy é uma função de perda amplamente utilizada em problemas de classificação, enquanto a Focal Loss 
 foi proposta por Lin et al. (2017) para reduzir a contribuição dos exemplos mais fáceis durante o treinamento, direcionando 
-maior atenção aos exemplos difíceis \cite{sec2Lin2017}. Assim, a comparação entre essas funções pode ajudar a compreender 
+maior atenção aos exemplos difíceis \cite{Lin2017}. Assim, a comparação entre essas funções pode ajudar a compreender 
 seus efeitos em diferentes arquiteturas de classificação de ECG.
 
 Dessa forma, este trabalho propõe uma comparação experimental entre as arquiteturas CNN-BiLSTM e BiLSTM, 
@@ -300,7 +300,7 @@ lidar com as características dos sinais. A arquitetura BiLSTM permite processar
 direções da sequência, enquanto a CNN-BiLSTM acrescenta uma etapa de extração de características locais antes desse 
 processamento. Dessa forma, a comparação entre essas arquiteturas permite investigar se a inclusão de camadas convolucionais 
 contribui para a classificação dos sinais de ECG. Da mesma forma, a função de perda utilizada no treinamento pode alterar a 
-influência dos exemplos mais fáceis e difíceis sobre o aprendizado \cite{sec2Lin2017}. Portanto, comparar arquiteturas e funções de 
+influência dos exemplos mais fáceis e difíceis sobre o aprendizado \cite{Lin2017}. Portanto, comparar arquiteturas e funções de 
 perda sob condições experimentais controladas constitui uma forma de investigar quais fatores contribuem para o desempenho da classificação.
 
 
@@ -362,14 +362,14 @@ de perda, adotando-se um nível de significância de 5\%.
 A justificativa acadêmica deste estudo está relacionada à comparação controlada de arquiteturas 
 e funções de perda na identificação de fibrilação atrial (FA) em registros de ECG de derivação única. Estudos recentes investigaram o desbalanceamento entre classes de batimentos, 
 a combinação de redes convolucionais e recorrentes e a Focal Loss
-\cite{sec2AlMousa2023,sec2Efe2024,sec2Albarrak2025}. Efe e Yavsan
+\cite{AlMousa2023,Efe2024,Albarrak2025}. Efe e Yavsan
 compararam, inclusive, uma variante com entropia cruzada a outra com
-Focal Loss em sua análise de componentes \cite{sec2Efe2024}. Entretanto,
+Focal Loss em sua análise de componentes \cite{Efe2024}. Entretanto,
 essas investigações classificam principalmente batimentos em bases
 MIT-BIH e não respondem à comparação fatorial proposta para o ritmo de
 registros curtos classificados como normais ou com FA no PhysioNet/CinC
 2017. A classe FA e o problema de classificação por registro são
-explicitamente descritos por Clifford et al. \cite{sec2Clifford2017}.
+explicitamente descritos por Clifford et al. \cite{Clifford2017}.
 Assim, o diferencial deste trabalho é estimar, na mesma base e sob o mesmo
 protocolo, como a presença da etapa CNN e a escolha da função de perda
 afetam o F1 da classe FA e o custo computacional, sem tomar os resultados
@@ -435,7 +435,7 @@ Foi realizado um levantamento bibliográfico exploratório de publicações sobr
     \item \textit{``heartbeat classification'' AND ``class imbalance'' AND ``ECG''}.
 \end{itemize}
 
-Para a seção de trabalhos relacionados, foram escolhidos três artigos originais em inglês publicados entre 2023 e 2025, relevantes para pelo menos um dos eixos desta pesquisa: desbalanceamento de classes, combinação de redes convolucionais e recorrentes ou comparação de funções de perda. A seleção considerou títulos, resumos, métodos, bases e classes avaliadas. Os três estudos tratam principalmente de classificação de batimentos, não da classificação binária de FA por registro proposta neste TCC. O artigo de Clifford et al. (2017) foi mantido como fonte específica da tarefa e da base PhysioNet/CinC 2017 \cite{sec2Clifford2017}. Para fundamentar conceitos e escolhas de projeto, foram incluídas também publicações anteriores, inclusive estudos sobre CNN, LSTM e validação de classificadores.
+Para a seção de trabalhos relacionados, foram escolhidos três artigos originais em inglês publicados entre 2023 e 2025, relevantes para pelo menos um dos eixos desta pesquisa: desbalanceamento de classes, combinação de redes convolucionais e recorrentes ou comparação de funções de perda. A seleção considerou títulos, resumos, métodos, bases e classes avaliadas. Os três estudos tratam principalmente de classificação de batimentos, não da classificação binária de FA por registro proposta neste TCC. O artigo de Clifford et al. (2017) foi mantido como fonte específica da tarefa e da base PhysioNet/CinC 2017 \cite{Clifford2017}. Para fundamentar conceitos e escolhas de projeto, foram incluídas também publicações anteriores, inclusive estudos sobre CNN, LSTM e validação de classificadores.
 
 Este levantamento tem caráter exploratório: a seleção dos três trabalhos permite contextualizar partes do problema, mas não constitui uma revisão sistemática nem pretende enumerar todos os estudos existentes. Como esses artigos classificam batimentos em outras bases, seus números não constituem resultados de referência para o F1 da classe FA no recorte binário deste trabalho.
 
@@ -445,39 +445,39 @@ Este levantamento tem caráter exploratório: a seleção dos três trabalhos pe
 \subsection{Eletrocardiograma e fibrilação atrial}
 \label{subsec:ecg_fa}
 
-O ECG registra a atividade elétrica cardíaca ao longo do tempo. Na avaliação do ritmo, a fibrilação atrial está associada à ausência de ondas P discerníveis e repetitivas e à irregularidade da ativação ventricular, observável na variação dos intervalos RR entre batimentos. Esses indícios precisam ser interpretados no contexto do traçado, pois irregularidades também podem ocorrer em outros ritmos e o ruído pode prejudicar a análise \cite{sec2VanGelder2024,sec2Clifford2017}.
+O ECG registra a atividade elétrica cardíaca ao longo do tempo. Na avaliação do ritmo, a fibrilação atrial está associada à ausência de ondas P discerníveis e repetitivas e à irregularidade da ativação ventricular, observável na variação dos intervalos RR entre batimentos. Esses indícios precisam ser interpretados no contexto do traçado, pois irregularidades também podem ocorrer em outros ritmos e o ruído pode prejudicar a análise \cite{VanGelder2024,Clifford2017}.
 
-O PhysioNet/Computing in Cardiology Challenge 2017 disponibilizou registros curtos de ECG de uma derivação, classificados como ritmo normal, fibrilação atrial, outro ritmo ou ruidoso. Na versão inicial dos rótulos descrita por \citeonline{sec2Clifford2017}, o conjunto público de treinamento possui 8.528 registros: 5.154 normais, 771 com FA, 2.557 de outros ritmos e 46 ruidosos. O recorte deste TCC considera apenas normal e FA dessa versão, totalizando 5.925 registros antes da divisão em treino, validação e teste. A razão entre as duas classes nesse recorte é aproximadamente 6,7 para 1, o que caracteriza o desbalanceamento a ser investigado. Os resultados obtidos nesse problema binário não podem ser tratados como pontuação oficial do desafio, que considera outras categorias.
+O PhysioNet/Computing in Cardiology Challenge 2017 disponibilizou registros curtos de ECG de uma derivação, classificados como ritmo normal, fibrilação atrial, outro ritmo ou ruidoso. Na versão inicial dos rótulos descrita por \citeonline{Clifford2017}, o conjunto público de treinamento possui 8.528 registros: 5.154 normais, 771 com FA, 2.557 de outros ritmos e 46 ruidosos. O recorte deste TCC considera apenas normal e FA dessa versão, totalizando 5.925 registros antes da divisão em treino, validação e teste. A razão entre as duas classes nesse recorte é aproximadamente 6,7 para 1, o que caracteriza o desbalanceamento a ser investigado. Os resultados obtidos nesse problema binário não podem ser tratados como pontuação oficial do desafio, que considera outras categorias.
 
 \subsection{Aprendizado profundo e redes convolucionais para ECG}
 \label{subsec:cnn_ecg}
 
-Uma série temporal contém observações ordenadas; no ECG, a posição e a evolução dos padrões ao longo do registro são relevantes para a classificação do ritmo. No aprendizado profundo, as características úteis à tarefa podem ser aprendidas a partir dos dados. Redes convolucionais unidimensionais (CNN 1D) aplicam filtros ao longo do sinal para aprender características locais. Essa abordagem foi utilizada tanto isoladamente quanto em combinação com camadas recorrentes na classificação de ECG \cite{sec2Goodfellow2016,sec2Zihlmann2017,sec2Xiong2018}.
+Uma série temporal contém observações ordenadas; no ECG, a posição e a evolução dos padrões ao longo do registro são relevantes para a classificação do ritmo. No aprendizado profundo, as características úteis à tarefa podem ser aprendidas a partir dos dados. Redes convolucionais unidimensionais (CNN 1D) aplicam filtros ao longo do sinal para aprender características locais. Essa abordagem foi utilizada tanto isoladamente quanto em combinação com camadas recorrentes na classificação de ECG \cite{Goodfellow2016,Zihlmann2017,Xiong2018}.
 
 \subsection{Redes recorrentes, LSTM e BiLSTM}
 \label{subsec:rnn_bilstm}
 
-Redes neurais recorrentes (RNN) processam uma sequência mantendo uma representação que depende das posições já percorridas. Essa estrutura permite modelar relações temporais entre as características extraídas do ECG \cite{sec2Goodfellow2016,sec2Xiong2018}.
+Redes neurais recorrentes (RNN) processam uma sequência mantendo uma representação que depende das posições já percorridas. Essa estrutura permite modelar relações temporais entre as características extraídas do ECG \cite{Goodfellow2016,Xiong2018}.
 
-As redes \textit{Long Short-Term Memory} (LSTM) foram propostas para lidar com dificuldades de aprendizagem de relações distantes em sequências por meio de mecanismos de memória controlados por portas \cite{sec2Hochreiter1997}. Em uma estrutura bidirecional, a sequência é processada em ambos os sentidos, de modo que a representação de uma posição pode incorporar informações anteriores e posteriores \cite{sec2Schuster1997}. A BiLSTM emprega células LSTM nessas duas direções; como este estudo classifica registros completos, os dois sentidos do sinal estão disponíveis no momento da predição \cite{sec2Cheng2021}.
+As redes \textit{Long Short-Term Memory} (LSTM) foram propostas para lidar com dificuldades de aprendizagem de relações distantes em sequências por meio de mecanismos de memória controlados por portas \cite{Hochreiter1997}. Em uma estrutura bidirecional, a sequência é processada em ambos os sentidos, de modo que a representação de uma posição pode incorporar informações anteriores e posteriores \cite{Schuster1997}. A BiLSTM emprega células LSTM nessas duas direções; como este estudo classifica registros completos, os dois sentidos do sinal estão disponíveis no momento da predição \cite{Cheng2021}.
 
 Neste trabalho, a BiLSTM processará diretamente a sequência de entrada, enquanto a CNN-BiLSTM terá uma etapa convolucional antes do bloco recorrente bidirecional. As duas propostas compartilham o tipo de componente temporal, permitindo investigar a contribuição da extração convolucional para a tarefa definida. Para interpretar essa comparação, o protocolo experimental deverá explicitar a forma de entrada, as dimensões das camadas e o número de parâmetros de cada rede.
 
 \subsection{Desbalanceamento de classes e funções de perda}
 \label{subsec:funcoes_perda}
 
-Em uma tarefa binária, o modelo atribui a cada registro uma probabilidade de pertencer à classe positiva, aqui definida como FA. Seja $y\in\{0,1\}$ o rótulo verdadeiro e $p\in(0,1)$ a probabilidade prevista para FA. A probabilidade atribuída à classe verdadeira é $p_t=p$ quando $y=1$ e $p_t=1-p$ quando $y=0$. A entropia cruzada binária para um exemplo pode então ser escrita como \cite{sec2Goodfellow2016,sec2Lin2017}
+Em uma tarefa binária, o modelo atribui a cada registro uma probabilidade de pertencer à classe positiva, aqui definida como FA. Seja $y\in\{0,1\}$ o rótulo verdadeiro e $p\in(0,1)$ a probabilidade prevista para FA. A probabilidade atribuída à classe verdadeira é $p_t=p$ quando $y=1$ e $p_t=1-p$ quando $y=0$. A entropia cruzada binária para um exemplo pode então ser escrita como \cite{Goodfellow2016,Lin2017}
 \begin{equation}
     \mathcal{L}_{\mathrm{CE}}(p_t)=-\log(p_t).
     \label{eq:ce_binaria}
 \end{equation}
 
-Na entropia cruzada não ponderada, cada exemplo contribui segundo a probabilidade atribuída ao seu rótulo. Como a base contém mais registros normais que registros com FA, é necessário verificar empiricamente se o treinamento resultante reconhece adequadamente a classe menos frequente. A \textit{Focal Loss}, proposta inicialmente para enfrentar o predomínio de exemplos fáceis em detecção de objetos, acrescenta um fator que reduz a contribuição relativa dos exemplos bem classificados \cite{sec2Lin2017}:
+Na entropia cruzada não ponderada, cada exemplo contribui segundo a probabilidade atribuída ao seu rótulo. Como a base contém mais registros normais que registros com FA, é necessário verificar empiricamente se o treinamento resultante reconhece adequadamente a classe menos frequente. A \textit{Focal Loss}, proposta inicialmente para enfrentar o predomínio de exemplos fáceis em detecção de objetos, acrescenta um fator que reduz a contribuição relativa dos exemplos bem classificados \cite{Lin2017}:
 \begin{equation}
     \mathcal{L}_{\mathrm{FL}}(p_t)=-\alpha_t(1-p_t)^{\gamma}\log(p_t),
     \label{eq:focal_binaria}
 \end{equation}
-em que $\gamma\geq0$ controla a ênfase nos exemplos difíceis. Na variante com ponderação de classes, $\alpha_t=\alpha$ quando $y=1$ (FA) e $\alpha_t=1-\alpha$ quando $y=0$ (normal), para $\alpha\in[0,1]$ \cite{sec2Lin2017}. Sem ponderação, pode-se definir $\alpha_t=1$ para ambas as classes: nesse caso, $\gamma=0$ faz a Equação~\ref{eq:focal_binaria} coincidir com a entropia cruzada não ponderada da Equação~\ref{eq:ce_binaria}. Com pesos de classe, $\gamma=0$ produz a entropia cruzada ponderada. A Focal Loss não garante, por si só, melhor identificação de FA; essa hipótese será examinada nas quatro combinações entre arquitetura e função de perda.
+em que $\gamma\geq0$ controla a ênfase nos exemplos difíceis. Na variante com ponderação de classes, $\alpha_t=\alpha$ quando $y=1$ (FA) e $\alpha_t=1-\alpha$ quando $y=0$ (normal), para $\alpha\in[0,1]$ \cite{Lin2017}. Sem ponderação, pode-se definir $\alpha_t=1$ para ambas as classes: nesse caso, $\gamma=0$ faz a Equação~\ref{eq:focal_binaria} coincidir com a entropia cruzada não ponderada da Equação~\ref{eq:ce_binaria}. Com pesos de classe, $\gamma=0$ produz a entropia cruzada ponderada. A Focal Loss não garante, por si só, melhor identificação de FA; essa hipótese será examinada nas quatro combinações entre arquitetura e função de perda.
 
 \subsection{Métricas para classificação desbalanceada}
 \label{subsec:metricas}
@@ -491,29 +491,29 @@ Para avaliar as previsões, FA será considerada a classe positiva. Na matriz de
     F_1 &= \frac{2\,\text{Precisão}\,\text{Revocação}}{\text{Precisão}+\text{Revocação}}. \label{eq:metricas}
 \end{align}
 
-A revocação, também chamada sensibilidade, indica a fração dos registros com FA recuperada pelo modelo; a precisão informa a fração de previsões de FA que está correta. O $F_1$ sintetiza precisão e revocação, enquanto a especificidade descreve o acerto entre os registros normais. Como a acurácia pode ser elevada mesmo diante de dificuldades com a classe menos frequente, as métricas serão apresentadas em conjunto \cite{sec2Saito2015}.
+A revocação, também chamada sensibilidade, indica a fração dos registros com FA recuperada pelo modelo; a precisão informa a fração de previsões de FA que está correta. O $F_1$ sintetiza precisão e revocação, enquanto a especificidade descreve o acerto entre os registros normais. Como a acurácia pode ser elevada mesmo diante de dificuldades com a classe menos frequente, as métricas serão apresentadas em conjunto \cite{Saito2015}.
 
-Também serão consideradas a área sob a curva ROC (AUC-ROC) e a área sob a curva precisão--revocação (AUC-PR), obtidas a partir de diferentes limiares de decisão. A curva precisão--revocação merece atenção particular na presença de desbalanceamento, pois torna visível a relação entre falsos positivos e a recuperação da classe FA \cite{sec2Saito2015}. Sua interpretação deverá levar em conta a proporção de FA no conjunto de teste.
+Também serão consideradas a área sob a curva ROC (AUC-ROC) e a área sob a curva precisão--revocação (AUC-PR), obtidas a partir de diferentes limiares de decisão. A curva precisão--revocação merece atenção particular na presença de desbalanceamento, pois torna visível a relação entre falsos positivos e a recuperação da classe FA \cite{Saito2015}. Sua interpretação deverá levar em conta a proporção de FA no conjunto de teste.
 
 \section{Trabalhos relacionados}
 \label{sec:trabalhos_relacionados}
 
-Foram escolhidos três estudos recentes que tratam de classificação de batimentos em ECG e abordam aspectos metodológicos pertinentes ao presente trabalho: desbalanceamento de classes, arquitetura híbrida e função de perda. Eles não classificam registros do PhysioNet/CinC 2017 na tarefa binária normal versus FA. A tarefa de distinguir FA de outros ritmos em registros curtos de uma derivação é descrita por \citeonline{sec2Clifford2017}; neste TCC, será adotado um recorte binário dessa base. Assim, a aproximação entre os três estudos a seguir e a proposta é metodológica, não uma equivalência entre classes, unidades de análise ou resultados numéricos.
+Foram escolhidos três estudos recentes que tratam de classificação de batimentos em ECG e abordam aspectos metodológicos pertinentes ao presente trabalho: desbalanceamento de classes, arquitetura híbrida e função de perda. Eles não classificam registros do PhysioNet/CinC 2017 na tarefa binária normal versus FA. A tarefa de distinguir FA de outros ritmos em registros curtos de uma derivação é descrita por \citeonline{Clifford2017}; neste TCC, será adotado um recorte binário dessa base. Assim, a aproximação entre os três estudos a seguir e a proposta é metodológica, não uma equivalência entre classes, unidades de análise ou resultados numéricos.
 
 \subsection{Al-Mousa et al. (2023)}
 \label{subsec:trab_almousa}
 
-\citeonline{sec2AlMousa2023} investigaram a classificação de cinco categorias de batimentos (N, SVEB, VEB, F e Q) com ênfase nas classes raras F e Q. A base principal foi a \textit{MIT-BIH Supraventricular Arrhythmia Database}; foram comparados cinco classificadores tradicionais, incluindo regressão logística e \textit{Random Forest}, com técnicas de balanceamento por SMOTE e incorporação de exemplos de outras bases. Os autores relataram acurácia de 97\% para o melhor classificador e revocação de apenas 30\% para a classe Q nesse resultado. Isso ilustra por que uma acurácia global elevada não dispensa a análise da classe minoritária. O estudo não empregou CNN-BiLSTM nem definiu FA como classe positiva de um registro inteiro. Neste TCC, a importância das classes minoritárias será examinada pelo F1 e pela revocação da classe FA em registros do CinC 2017, sem importar os resultados por batimento como parâmetro de desempenho.
+\citeonline{AlMousa2023} investigaram a classificação de cinco categorias de batimentos (N, SVEB, VEB, F e Q) com ênfase nas classes raras F e Q. A base principal foi a \textit{MIT-BIH Supraventricular Arrhythmia Database}; foram comparados cinco classificadores tradicionais, incluindo regressão logística e \textit{Random Forest}, com técnicas de balanceamento por SMOTE e incorporação de exemplos de outras bases. Os autores relataram acurácia de 97\% para o melhor classificador e revocação de apenas 30\% para a classe Q nesse resultado. Isso ilustra por que uma acurácia global elevada não dispensa a análise da classe minoritária. O estudo não empregou CNN-BiLSTM nem definiu FA como classe positiva de um registro inteiro. Neste TCC, a importância das classes minoritárias será examinada pelo F1 e pela revocação da classe FA em registros do CinC 2017, sem importar os resultados por batimento como parâmetro de desempenho.
 
 \subsection{Efe e Yavsan (2024)}
 \label{subsec:trab_efe}
 
-\citeonline{sec2Efe2024} propuseram a arquitetura \textit{AttBiLFNet}, que combina CNN, BiLSTM, mecanismo de atenção e \textit{Focal Loss} na classificação de cinco classes de batimentos da \textit{MIT-BIH Arrhythmia Database}: normal (N), bloqueio de ramo esquerdo (LBBB), bloqueio de ramo direito (RBBB), contração ventricular prematura (PVC) e batimento atrial prematuro (APB). Os autores avaliaram configurações alternativas, incluindo a substituição da \textit{Focal Loss} por entropia cruzada categórica, e empregaram validação cruzada em dez partes. Portanto, a comparação entre essas duas perdas já foi explorada para batimentos de ECG. Entretanto, APB não equivale à fibrilação atrial, e o artigo não examina o desenho fatorial CNN-BiLSTM versus BiLSTM, cruzado com as duas perdas, para a classificação binária de FA por registro. Seus resultados não serão comparados numericamente ao F1 de FA deste TCC.
+\citeonline{Efe2024} propuseram a arquitetura \textit{AttBiLFNet}, que combina CNN, BiLSTM, mecanismo de atenção e \textit{Focal Loss} na classificação de cinco classes de batimentos da \textit{MIT-BIH Arrhythmia Database}: normal (N), bloqueio de ramo esquerdo (LBBB), bloqueio de ramo direito (RBBB), contração ventricular prematura (PVC) e batimento atrial prematuro (APB). Os autores avaliaram configurações alternativas, incluindo a substituição da \textit{Focal Loss} por entropia cruzada categórica, e empregaram validação cruzada em dez partes. Portanto, a comparação entre essas duas perdas já foi explorada para batimentos de ECG. Entretanto, APB não equivale à fibrilação atrial, e o artigo não examina o desenho fatorial CNN-BiLSTM versus BiLSTM, cruzado com as duas perdas, para a classificação binária de FA por registro. Seus resultados não serão comparados numericamente ao F1 de FA deste TCC.
 
 \subsection{Albarrak, Alharbi e Ibrahim (2025)}
 \label{subsec:trab_albarrak}
 
-\citeonline{sec2Albarrak2025} compararam modelos de aprendizado de máquina e redes neurais para classificar cinco classes de batimentos da base MIT-BIH. A proposta combina CNN 1D e LSTM, com otimização de hiperparâmetros por \textit{Grey Wolf Optimizer}, e alcançou acurácia global de 97\% no protocolo relatado. Os autores destacam a ausência de validação cruzada e testes estatísticos como limitação. O artigo motiva a análise conjunta de desempenho e custo de modelos híbridos, mas utiliza LSTM, não BiLSTM, e não classifica FA em registros curtos do CinC 2017. Sua acurácia não será usada como meta numérica para a presente tarefa.
+\citeonline{Albarrak2025} compararam modelos de aprendizado de máquina e redes neurais para classificar cinco classes de batimentos da base MIT-BIH. A proposta combina CNN 1D e LSTM, com otimização de hiperparâmetros por \textit{Grey Wolf Optimizer}, e alcançou acurácia global de 97\% no protocolo relatado. Os autores destacam a ausência de validação cruzada e testes estatísticos como limitação. O artigo motiva a análise conjunta de desempenho e custo de modelos híbridos, mas utiliza LSTM, não BiLSTM, e não classifica FA em registros curtos do CinC 2017. Sua acurácia não será usada como meta numérica para a presente tarefa.
 
 A Tabela~\ref{tab:trabalhos_relacionados} resume os recortes metodológicos. A lacuna examinada neste TCC não é a ausência de estudos com CNN, BiLSTM ou \textit{Focal Loss} em ECG: Efe e Yavsan já combinaram esses componentes e compararam perdas em uma análise de batimentos. O diferencial proposto é investigar, em um protocolo comum, como a presença da etapa CNN e a escolha da perda afetam o F1 da classe FA quando a unidade de avaliação é um registro de ECG de derivação única do CinC 2017. Também será medido o custo computacional das quatro configurações. Essas comparações internas não permitem concluir que os modelos superam os resultados publicados nas outras bases.
 
@@ -535,7 +535,7 @@ A Tabela~\ref{tab:trabalhos_relacionados} resume os recortes metodológicos. A l
         Este TCC & CinC 2017; registro normal ou FA & BiLSTM vs. CNN--BiLSTM cruzadas com entropia cruzada vs. \textit{Focal Loss}; F1 de FA e custo \\
         \bottomrule
     \end{tabular}
-    \legend{Fonte: Elaborado pelos autores (2026), com base em \citeonline{sec2AlMousa2023}, \citeonline{sec2Efe2024} e \citeonline{sec2Albarrak2025}.}
+    \legend{Fonte: Elaborado pelos autores (2026), com base em \citeonline{AlMousa2023}, \citeonline{Efe2024} e \citeonline{Albarrak2025}.}
 \end{table}
 
 % ===============================================================
