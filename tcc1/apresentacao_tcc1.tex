@@ -23,322 +23,315 @@
 %   pdflatex apresentacao_tcc1.tex   (2x para fixar índice/numeração)
 % ===============================================================
 
-\documentclass[
-    aspectratio=169,   % proporção 16:9 (use 43 para 4:3)
-    12pt,
-    brazil
-]{beamer}
-
-% ---------------------------------------------------------------
-% PACOTES
-% ---------------------------------------------------------------
+\documentclass[aspectratio=169,12pt,brazil]{beamer}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[brazil]{babel}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tikz}
-\usepackage{pgfgantt}      % cronograma (Gantt), igual ao documento escrito
-\usepackage{appendixnumberbeamer}
+\usetikzlibrary{positioning,arrows.meta}
+\usepackage{pgfgantt}
 
-% ---------------------------------------------------------------
-% TEMA E CORES
-% ---------------------------------------------------------------
 \usetheme{default}
 \useinnertheme{circles}
-\setbeamertemplate{navigation symbols}{}   % remove ícones de navegação
-
-% Cores institucionais (ajuste se o curso definir outras)
+\setbeamertemplate{navigation symbols}{}
 \definecolor{senacblue}{RGB}{0,51,102}
 \definecolor{senacorange}{RGB}{243,146,0}
-
 \setbeamercolor{structure}{fg=senacblue}
 \setbeamercolor{frametitle}{fg=white,bg=senacblue}
 \setbeamercolor{title}{fg=senacblue}
-\setbeamercolor{section in toc}{fg=senacblue}
-\setbeamercolor{itemize item}{fg=senacorange}
-\setbeamercolor{itemize subitem}{fg=senacorange}
-\setbeamerfont{frametitle}{series=\bfseries}
-\setbeamertemplate{frametitle}[default][left]
-
-% Rodapé simples: autor | título curto | número do slide
+\setbeamercolor{block title}{fg=white,bg=senacblue}
+\setbeamercolor{block body}{bg=senacblue!6}
+\setbeamerfont{frametitle}{series=\bfseries,size=\normalsize}
 \setbeamertemplate{footline}{%
-  \leavevmode%
-  \hbox{%
-    \begin{beamercolorbox}[wd=.34\paperwidth,ht=2.4ex,dp=1ex,leftskip=1em]{author in head/foot}%
-      \usebeamerfont{author in head/foot}\insertshortauthor
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=.32\paperwidth,ht=2.6ex,dp=1ex,leftskip=1em]{author in head/foot}%
+      \insertshortauthor
     \end{beamercolorbox}%
-    \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.4ex,dp=1ex,center]{title in head/foot}%
-      \usebeamerfont{title in head/foot}\insertshorttitle
+    \begin{beamercolorbox}[wd=.52\paperwidth,ht=2.6ex,dp=1ex,center]{title in head/foot}%
+      \insertshorttitle
     \end{beamercolorbox}%
-    \begin{beamercolorbox}[wd=.16\paperwidth,ht=2.4ex,dp=1ex,rightskip=1em]{title in head/foot}%
-      \usebeamerfont{title in head/foot}\hfill\insertframenumber/\inserttotalframenumber
+    \begin{beamercolorbox}[wd=.16\paperwidth,ht=2.6ex,dp=1ex,rightskip=1em]{title in head/foot}%
+      \hfill\insertframenumber/\inserttotalframenumber
     \end{beamercolorbox}%
-  }\vskip0pt%
+  }%
 }
 \setbeamercolor{author in head/foot}{bg=senacblue,fg=white}
 \setbeamercolor{title in head/foot}{bg=senacblue!85,fg=white}
 
-% ---------------------------------------------------------------
-% LOGO DO SENAC (grande na capa, pequena no canto dos demais slides)
-% ---------------------------------------------------------------
-% Macro para a logo GRANDE (capa).
 \newcommand{\logosenacgrande}{%
   \IfFileExists{assets/logo-senac.png}{%
-    \includegraphics[height=2.6cm]{assets/logo-senac.png}%
-  }{%
-    \begin{tikzpicture}
-      \node[draw=senacblue,line width=1pt,rounded corners,
-            minimum width=4.5cm,minimum height=2.4cm,align=center,
-            fill=senacblue!5]
-        {\bfseries\color{senacblue}\Large SENAC\\[2pt]
-         \normalsize Santo Amaro\\[6pt]
-         \scriptsize\itshape (coloque assets/logo-senac.png)};
-    \end{tikzpicture}%
-  }%
+    \includegraphics[height=1.8cm]{assets/logo-senac.png}%
+  }{\fcolorbox{senacblue}{white}{\parbox[c][1.2cm][c]{3.3cm}{\centering\Large\bfseries\color{senacblue}SENAC}}}%
 }
-
-% Macro para a logo PEQUENA (canto superior direito).
 \newcommand{\logosenacpequena}{%
   \IfFileExists{assets/logo-senac.png}{%
-    \includegraphics[height=0.8cm]{assets/logo-senac.png}%
-  }{%
-    \fbox{\scriptsize\bfseries\color{senacblue}SENAC}%
-  }%
+    \includegraphics[height=.45cm]{assets/logo-senac.png}%
+  }{\fcolorbox{senacblue}{white}{\scriptsize\bfseries\color{senacblue}SENAC}}%
 }
-
-% Coloca a logo pequena no canto superior direito dos slides que têm
-% título (sobre a barra azul, dentro de um pequeno "chip" branco para
-% que a logo preta fique visível). Os frames "plain" (capa e
-% encerramento) não têm frametitle, logo não recebem a logo pequena
-% --- exatamente como desejado.
 \addtobeamertemplate{frametitle}{}{%
   \begin{tikzpicture}[remember picture,overlay]
-    \node[anchor=north east,fill=white,rounded corners=2pt,inner sep=3pt]
-      at ([xshift=-6pt,yshift=-5pt]current page.north east) {\logosenacpequena};
+    \node[anchor=north east,fill=white,rounded corners=2pt,inner sep=2pt]
+      at ([xshift=-5pt,yshift=-5pt]current page.north east)
+      {\logosenacpequena};
   \end{tikzpicture}%
 }
 
-% ---------------------------------------------------------------
-% DADOS DA APRESENTAÇÃO (preencha)
-% ---------------------------------------------------------------
-\title[Título curto do TCC]{Título do Trabalho de Conclusão de Curso}
-\subtitle{Proposta de TCC --- TCC1}
-\author[Daniel de Araujo Carvalho e Eduardo Dias Santos]{Daniel de Araujo Carvalho \\ Eduardo Dias Santos}
-\institute[SENAC Santo Amaro]{%
-  SENAC --- Unidade Santo Amaro\\
-  Bacharelado em Ciência da Computação\\
-  \footnotesize Orientador: Prof. Nome do Orientador}
-\date{São Paulo, 2025}
+\title[Classificação de FA em ECG]{Comparação entre CNN-BiLSTM e BiLSTM na classificação de fibrilação atrial em sinais de eletrocardiograma}
+\subtitle{Análise do impacto da Cross-Entropy e da Focal Loss\\[.2em]Proposta de Trabalho de Conclusão de Curso — TCC1}
+\author[Daniel e Eduardo]{Daniel de Araujo Carvalho\\Eduardo Dias Santos}
+\institute[SENAC Santo Amaro]{SENAC — Unidade Santo Amaro\\Bacharelado em Ciência da Computação\\Orientador: Prof. Afonso Lelis}
+\date{São Paulo, 2026}
 
-% ===============================================================
 \begin{document}
 
-% ---------------------------------------------------------------
-% SLIDE 1 - CAPA (logo GRANDE)  -- ~0:30
-% ---------------------------------------------------------------
-{
-\setbeamertemplate{footline}{}   % capa sem rodapé
+{\setbeamertemplate{footline}{}
 \begin{frame}[plain]
   \centering
-  \vspace{0.3cm}
-  \logosenacgrande
-
-  \vspace{0.6cm}
-  {\usebeamerfont{title}\usebeamercolor[fg]{title}\bfseries\inserttitle\par}
-  \vspace{0.2cm}
-  {\large\insertsubtitle\par}
-
-  \vspace{0.8cm}
-  {\insertauthor\par}
-  \vspace{0.2cm}
-  {\footnotesize\insertinstitute\par}
-
-  \vfill
+  \logosenacgrande\par\vspace{.35cm}
+  {\large\bfseries\color{senacblue}\inserttitle\par}\vspace{.18cm}
+  {\small\insertsubtitle\par}\vspace{.4cm}
+  {\small\insertauthor\par}\vspace{.2cm}
+  {\footnotesize\insertinstitute\par}\vfill
   {\footnotesize\insertdate\par}
-\end{frame}
-}
+\end{frame}}
 
-% ---------------------------------------------------------------
-% SLIDE 2 - AGENDA / ROTEIRO  -- ~0:30
-% ---------------------------------------------------------------
-\begin{frame}{Roteiro da apresentação}
+\begin{frame}{Roteiro}
   \tableofcontents
 \end{frame}
 
-% ===============================================================
-% A ORDEM ABAIXO SEGUE EXATAMENTE O DOCUMENTO ESCRITO (tcc.tex)
-% Sugestão de tempo total: 20 minutos
-%   - Introdução .................. ~5 min
-%   - Referencial Bibliográfico ... ~5 min
-%   - Desenvolvimento ............. ~7 min
-%   - Encerramento ................ ~3 min
-% Regra prática: ~1 a 1,5 min por slide => ~14 a 18 slides de conteúdo.
-% Reserve ~2 a 3 min para perguntas da banca, dentro dos 20 min.
-% ===============================================================
-
-% ---------------------------------------------------------------
 \section{Introdução}
-% ---------------------------------------------------------------
-\begin{frame}{Contexto}
+
+\begin{frame}{Contexto: ECG e fibrilação atrial}
   \begin{itemize}
-    \item Apresente o cenário que originou o problema.
-    \item Mostre dados/indicadores que comprovem a existência do problema.
-    \item Indique quem é afetado e as consequências de não resolvê-lo.
+    \item O eletrocardiograma (ECG) registra a atividade elétrica cardíaca.
+    \item A fibrilação atrial (FA) é um ritmo irregular que pode ser identificado no ECG; a análise de registros curtos motiva a classificação automática.
+    \item O desafio PhysioNet/CinC 2017 fornece ECG de derivação única: 8.528 registros de treinamento, entre eles 5.154 normais e 771 com FA.
   \end{itemize}
-  \vfill
-  {\footnotesize\itshape Dica: 1 slide, foco em situar a banca rapidamente.}
+  \begin{block}{Recorte do TCC}
+    Classificação binária de 5.925 registros Normal/FA; aproximadamente 6,7 registros normais para cada registro com FA.
+  \end{block}
+  {\scriptsize Fonte: Clifford et al. (2017).}
 \end{frame}
 
-\begin{frame}{Problema e Justificativa}
-  \begin{block}{Problema}
-    Enuncie em uma frase clara o problema que o trabalho ataca.
+\begin{frame}{Pergunta e hipótese de pesquisa}
+  \begin{block}{Pergunta}
+    Em que medida a Focal Loss, em comparação à Cross-Entropy, influencia a classificação de FA em ECG nas arquiteturas CNN-BiLSTM e BiLSTM?
   \end{block}
+  \begin{block}{Hipótese a testar}
+    A Focal Loss melhora o F1 da classe FA em mais de \textbf{2 pontos percentuais} em relação à Cross-Entropy \textbf{em cada arquitetura}.
+  \end{block}
+  \small A comparação será pareada e adotará nível de significância de 5\%. O limiar de 2 pontos percentuais é um critério de relevância definido para este estudo.
+\end{frame}
+
+\begin{frame}{Justificativa e diferencial}
   \begin{itemize}
-    \item \textbf{Relevância acadêmica}: contribuição para a área.
-    \item \textbf{Relevância prática}: benefícios para usuários/sociedade.
-    \item \textbf{Lacuna}: o que ainda não foi resolvido.
+    \item Trabalhos recentes combinam convolução, recorrência, técnicas para desbalanceamento e funções de perda em \textbf{classificação de batimentos}.
+    \item Falta verificar, sob um mesmo protocolo, o efeito da função de perda sobre o \textbf{ritmo FA de um registro curto}.
+    \item A comparação CNN-BiLSTM × BiLSTM examina a contribuição da etapa convolucional com processamento bidirecional em ambos os modelos.
+    \item Tempo de treinamento, latência e parâmetros serão analisados junto ao desempenho de classificação.
   \end{itemize}
+  {\scriptsize Fontes: Al-Mousa et al. (2023); Efe e Yavsan (2024); Albarrak, Alharbi e Ibrahim (2025); Clifford et al. (2017).}
 \end{frame}
 
 \begin{frame}{Objetivos}
   \begin{block}{Objetivo principal}
-    Frase única, com verbo no infinitivo (desenvolver, propor, avaliar\ldots).
+    Comparar experimentalmente CNN-BiLSTM e BiLSTM na classificação de FA, avaliando o impacto da Cross-Entropy e da Focal Loss no desempenho e no custo computacional.
   \end{block}
-  \textbf{Objetivos secundários:}
   \begin{enumerate}
-    \item Levantamento bibliográfico sobre o tema;
-    \item Levantamento e análise de requisitos;
-    \item Projeto da arquitetura da solução;
-    \item Implementação de protótipo (no TCC2);
-    \item Validação por testes/métricas/estudo de caso.
+    \item Preparar os registros Normal/FA do PhysioNet/CinC 2017.
+    \item Implementar e treinar as quatro combinações.
+    \item Medir F1 de FA e demais métricas de classificação.
+    \item Comparar o efeito das funções de perda e o custo das arquiteturas.
   \end{enumerate}
 \end{frame}
 
-% ---------------------------------------------------------------
 \section{Referencial Bibliográfico}
-% ---------------------------------------------------------------
+
 \begin{frame}{Metodologia da pesquisa bibliográfica}
   \begin{itemize}
-    \item \textbf{Bases consultadas}: Google Scholar, IEEE Xplore, ACM, SciELO\ldots
-    \item \textbf{Palavras-chave}: termos de busca (PT/EN).
-    \item \textbf{Critérios}: inclusão/exclusão e período de abrangência.
+    \item Levantamento exploratório em registros do PubMed, documentação e artigo do PhysioNet/CinC 2017 e periódicos da área.
+    \item Termos de busca: \texttt{"atrial fibrillation" AND "single-lead ECG" AND "deep learning"}; \texttt{"focal loss" AND "ECG" AND "class imbalance"}.
+    \item Artigos relacionados originais, em inglês, publicados entre 2023 e 2025; fontes clássicas para os conceitos fundamentais.
+    \item Separação entre trabalhos sobre \textbf{batimentos} e a tarefa deste estudo, sobre \textbf{ritmo por registro}.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Referencial teórico e técnico}
+\begin{frame}{Fundamentos: do sinal às arquiteturas}
   \begin{itemize}
-    \item Conceitos e teorias que fundamentam a proposta.
-    \item Tecnologias/algoritmos/frameworks que serão empregados.
-    \item Do mais geral para o mais específico (1 a 2 slides).
+    \item \textbf{ECG e FA:} irregularidade dos intervalos RR e ausência de ondas P discerníveis são características relevantes.
+    \item \textbf{CNN 1D:} extrai padrões locais diretamente da sequência de amostras.
+    \item \textbf{BiLSTM:} processa dependências temporais nos dois sentidos da sequência.
+    \item \textbf{CNN-BiLSTM:} acrescenta extração convolucional antes da mesma abordagem recorrente bidirecional.
   \end{itemize}
-  \vfill
-  {\footnotesize\itshape Mostre domínio dos fundamentos --- não liste tudo, destaque o essencial.}
+  {\scriptsize Referencial do texto: Clifford et al. (2017); Goodfellow, Bengio e Courville (2016); Hochreiter e Schmidhuber (1997); Schuster e Paliwal (1997).}
 \end{frame}
 
-\begin{frame}{Trabalhos relacionados}
-  \small
-  \begin{table}
-    \centering
-    \begin{tabular}{lcccc}
-      \toprule
-      \textbf{Critério} & \textbf{Trab. 1} & \textbf{Trab. 2} & \textbf{Trab. 3} & \textbf{Este} \\
-      \midrule
-      Objetivo   & [\,] & [\,] & [\,] & [\,] \\
-      Tecnologia & [\,] & [\,] & [\,] & [\,] \\
-      Validação  & [\,] & [\,] & [\,] & [\,] \\
-      Limitação  & [\,] & [\,] & [\,] & --- \\
-      \bottomrule
-    \end{tabular}
-  \end{table}
-  \vfill
-  {\footnotesize Até 3 trabalhos que atacaram o \textbf{mesmo problema}; destaque como o seu avança.}
+\begin{frame}{Funções de perda e classe minoritária}
+  \begin{columns}[T]
+    \column{.49\textwidth}
+    \begin{block}{Cross-Entropy}
+      \centering $L_{\mathrm{CE}}(p_t)=-\log(p_t)$
+    \end{block}
+    \small Referência para o treinamento das duas arquiteturas.
+    \column{.49\textwidth}
+    \begin{block}{Focal Loss}
+      \centering $L_{\mathrm{FL}}(p_t)=-\alpha_t(1-p_t)^\gamma\log(p_t)$
+    \end{block}
+    \small Reduz a contribuição relativa dos exemplos fáceis; o benefício para FA será testado.
+  \end{columns}
+  \vspace{.25cm}
+  \small $p_t$ é a probabilidade atribuída à classe verdadeira; $\gamma$ controla a ênfase nos exemplos difíceis e $\alpha_t$ o peso da classe.
+  \vfill {\scriptsize Fonte: Lin et al. (2017).}
 \end{frame}
 
-% ---------------------------------------------------------------
+\begin{frame}{Como medir o desempenho}
+  \begin{block}{Métrica principal: F1 da classe FA}
+    \centering $F1=\dfrac{2\,VP}{2\,VP+FP+FN}$\\
+    \scriptsize $VP$: verdadeiros positivos; $FP$: falsos positivos; $FN$: falsos negativos.
+  \end{block}
+  \begin{itemize}
+    \item \textbf{Revocação:} proporção dos registros com FA detectados.
+    \item \textbf{Precisão:} proporção de previsões de FA corretas.
+    \item Também: matriz de confusão, acurácia, especificidade, AUC-ROC e AUC-PR.
+  \end{itemize}
+  \small A acurácia isolada pode esconder dificuldades com a classe menos frequente.
+\end{frame}
+
+\begin{frame}{Trabalhos relacionados: tarefas distintas}
+  \scriptsize
+  \begin{tabular}{p{2.1cm}p{3.05cm}p{3.7cm}p{3.1cm}}
+    \toprule
+    \textbf{Estudo} & \textbf{Tarefa/base} & \textbf{Método} & \textbf{Diferença para este TCC} \\
+    \midrule
+    Al-Mousa et al. (2023) & 5 classes de batimentos; MIT-BIH supraventricular & Métodos tradicionais e SMOTE & Não classifica FA por registro \\
+    Efe e Yavsan (2024) & 5 classes de batimentos; MIT-BIH Arrhythmia & CNN-BiLSTM, atenção e Focal Loss & Não avalia FA por registro \\
+    Albarrak et al. (2025) & 5 classes de batimentos; MIT-BIH & CNN-LSTM e otimização GWO & Não compara o fatorial proposto \\
+    \midrule
+    \textbf{Este TCC} & \textbf{Normal × FA; CinC 2017} & \textbf{CNN-BiLSTM/BiLSTM × CE/FL} & \textbf{F1 de FA e custo, mesmo protocolo} \\
+    \bottomrule
+  \end{tabular}
+  \vspace{.2cm}
+
+  \small Os resultados numéricos dos estudos sobre batimentos não são diretamente comparáveis aos de FA por registro.
+\end{frame}
+
 \section{Desenvolvimento}
-% ---------------------------------------------------------------
-\begin{frame}{Solução proposta}
+
+\begin{frame}{Solução proposta: fluxo experimental}
+  \centering
+  \begin{tikzpicture}[
+    step/.style={draw=senacblue,rounded corners,fill=senacblue!8,align=center,
+                 minimum height=.8cm,text width=2.55cm,font=\scriptsize},
+    arr/.style={-{Stealth},thick,draw=senacorange}]
+    \node[step] (a) {CinC 2017\\ECG, 300 Hz};
+    \node[step,right=.33cm of a] (b) {Normal/FA\\5.925 registros};
+    \node[step,right=.33cm of b] (c) {Divisão estratificada\\70/15/15};
+    \node[step,below=.62cm of c] (d) {Pré-processamento\\30 s; Z-score};
+    \node[step,left=.33cm of d] (e) {Quatro combinações\\2 arquiteturas × 2 perdas};
+    \node[step,left=.33cm of e] (f) {Avaliação\\F1, estatística, custo};
+    \draw[arr] (a) -- (b); \draw[arr] (b) -- (c);
+    \draw[arr] (c) -- (d); \draw[arr] (d) -- (e); \draw[arr] (e) -- (f);
+  \end{tikzpicture}
+  \vspace{.45cm}
+
+  \small Registros de “outro ritmo” e “ruidoso” ficam fora do recorte binário.
+\end{frame}
+
+\begin{frame}{Dados, divisão e pré-processamento}
   \begin{itemize}
-    \item \textbf{Visão geral}: o que será desenvolvido.
-    \item \textbf{Arquitetura}: componentes e como interagem.
-    \item \textbf{Tecnologias}: linguagens, frameworks, banco de dados.
-    \item \textbf{Funcionalidades} principais.
-    \item \textbf{Validação}: como o sucesso será medido.
+    \item \textbf{Uma derivação, 300 Hz:} cada entrada terá 30 segundos, ou \textbf{9.000 amostras}.
+    \item Registros longos: recorte central. Registros curtos: preenchimento com zeros.
+    \item Divisão por registro, estratificada: \textbf{70\% treino, 15\% validação, 15\% teste}; idêntica para as quatro configurações.
+    \item Z-score: média e desvio-padrão calculados somente com amostras válidas do treino; aplicar aos demais conjuntos e preencher com zeros \textbf{depois}.
+  \end{itemize}
+  \small Ferramentas previstas: Python, WFDB, PyTorch, NumPy, Pandas, scikit-learn e Matplotlib.
+\end{frame}
+
+\begin{frame}{Experimento fatorial 2 × 2}
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    \textbf{Arquitetura} & \textbf{Cross-Entropy} & \textbf{Focal Loss} \\
+    \midrule
+    CNN-BiLSTM & E1 & E2 \\
+    BiLSTM & E3 & E4 \\
+    \bottomrule
+  \end{tabular}
+  \vspace{.45cm}
+
+  \begin{itemize}
+    \item Comparação da perda dentro de cada arquitetura: E2 × E1 e E4 × E3.
+    \item Comparação da etapa convolucional sob a mesma perda: E1 × E3 e E2 × E4.
+    \item Mesmo conjunto de teste e protocolo de avaliação para as quatro células.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Arquitetura da solução}
-  \centering
-  % Substitua pelo seu diagrama:
-  % \includegraphics[width=0.8\textwidth]{assets/arquitetura.png}
-  \begin{tikzpicture}[node distance=1.4cm,every node/.style={font=\small}]
-    \node[draw,rounded corners,fill=senacblue!10] (a) {Front-end};
-    \node[draw,rounded corners,fill=senacblue!10,right=2cm of a] (b) {Back-end / API};
-    \node[draw,rounded corners,fill=senacblue!10,right=2cm of b] (c) {Banco de dados};
-    \draw[->,thick] (a) -- (b);
-    \draw[->,thick] (b) -- (c);
-  \end{tikzpicture}
-  \vfill
-  {\footnotesize\itshape Use um diagrama, fluxograma ou mockup --- evite parágrafos longos.}
+\begin{frame}{Avaliação, estatística e custo}
+  \begin{itemize}
+    \item \textbf{Desempenho:} F1 de FA como métrica principal; revocação, precisão, especificidade, acurácia, AUC-ROC e AUC-PR como complementares.
+    \item \textbf{Repetições:} reportar média e desvio-padrão; comparar as perdas de modo pareado, ao nível de 5\%.
+    \item \textbf{Custo:} tempo de treinamento, latência por registro e quantidade de parâmetros treináveis.
+    \item \textbf{Ambiente previsto:} AMD Ryzen 5 5600; NVIDIA GeForce GTX 1650; 16 GB RAM; SSD de aproximadamente 700 GB.
+  \end{itemize}
+  \small Quantidade de repetições, hiperparâmetros e teste estatístico específico ainda precisam ser fixados no protocolo antes da execução.
 \end{frame}
 
-\begin{frame}{Cronograma (TCC2)}
+\begin{frame}{Cronograma do TCC2: fevereiro a junho de 2027}
   \centering
-  \resizebox{\textwidth}{!}{%
+  \resizebox{.98\textwidth}{!}{%
   \begin{ganttchart}[
-      hgrid, vgrid,
-      bar/.append style={fill=senacblue!40},
-      group/.append style={draw=black, fill=senacblue!70},
+      hgrid,vgrid,bar/.append style={fill=senacblue!55},
       milestone/.append style={fill=senacorange},
-      bar label font=\scriptsize, group label font=\scriptsize\bfseries,
-      title label font=\scriptsize, milestone label font=\scriptsize\itshape,
-    ]{1}{16}
-    \gantttitle{Semanas}{16} \\
-    \gantttitlelist{1,...,16}{1} \\
-    \ganttgroup{Planejamento}{1}{4} \\
-    \ganttbar{Revisão / requisitos}{1}{4} \\
-    \ganttmilestone{Projeto}{4} \\
-    \ganttgroup{Desenvolvimento}{5}{11} \\
-    \ganttbar{Implementação}{5}{11} \\
-    \ganttmilestone{Protótipo}{11} \\
-    \ganttgroup{Validação}{12}{16} \\
-    \ganttbar{Testes e redação}{12}{16} \\
-    \ganttmilestone{Entrega}{16}
+      bar label font=\scriptsize, title label font=\scriptsize,
+      x unit=1.15cm, y unit chart=.43cm,
+    ]{1}{5}
+    \gantttitle{Meses de 2027}{5} \\
+    \gantttitlelist{Fev,Mar,Abr,Mai,Jun}{1} \\
+    \ganttbar{Revisão e protocolo}{1}{2} \\
+    \ganttbar{Obtenção e preparação dos dados}{1}{2} \\
+    \ganttbar{Implementação e treinamento}{2}{3} \\
+    \ganttbar{Métricas, estatística e custo}{3}{4} \\
+    \ganttbar{Redação, ajustes e apresentação}{4}{5} \\
+    \ganttmilestone{Entrega final}{5}
   \end{ganttchart}}
+  \vspace{.3cm}
+
+  \scriptsize Síntese das fases do cronograma do Capítulo 3; atividades podem se sobrepor.
 \end{frame}
 
-% ---------------------------------------------------------------
 \section{Considerações finais}
-% ---------------------------------------------------------------
+
 \begin{frame}{Resultados esperados e próximos passos}
   \begin{itemize}
-    \item O que se espera entregar ao final do TCC2.
-    \item Riscos e como serão mitigados.
-    \item Próximas etapas imediatas.
+    \item Estimar o efeito de Focal Loss sobre o F1 da classe FA \textbf{em cada arquitetura}.
+    \item Examinar se acrescentar a CNN traz ganho diante do tempo e dos parâmetros adicionais.
+    \item Concluir a especificação reprodutível de camadas, hiperparâmetros, sementes e teste estatístico antes dos treinamentos.
+    \item Reportar as limitações do recorte binário: outros ritmos e sinais ruidosos ficam fora da avaliação.
   \end{itemize}
+  \small Os resultados são esperados: a proposta ainda não apresenta modelos treinados nem ganhos comprovados.
 \end{frame}
 
+{\setbeamertemplate{footline}{}
 \begin{frame}[plain]
-  \centering
-  \vspace{1cm}
-  \logosenacgrande
+  \centering\vfill
+  \logosenacgrande\par\vspace{.5cm}
+  {\Large\bfseries\color{senacblue}Obrigado!\par}\vspace{.25cm}
+  Perguntas?\par\vspace{.55cm}
+  {\small Daniel de Araujo Carvalho\\Eduardo Dias Santos}\vfill
+\end{frame}}
 
-  \vspace{0.8cm}
-  {\Large\bfseries\color{senacblue}Obrigado!\par}
-  \vspace{0.3cm}
-  {\normalsize Perguntas?\par}
-  \vspace{0.6cm}
-  {\footnotesize Daniel de Araujo Carvalho \\ Eduardo Dias Santos}
-\end{frame}
-
-% ---------------------------------------------------------------
-% APÊNDICE (slides de apoio / backup para perguntas da banca)
-% ---------------------------------------------------------------
+% Slides de apoio: ficam após o encerramento, para perguntas da banca.
 \appendix
-\begin{frame}{Slides de apoio}
-  Use slides extras (após o "Obrigado") para responder perguntas:
-  detalhes técnicos, tabelas completas, referências, etc.
+\begin{frame}{Apoio: recorte e interpretação}
+  \begin{itemize}
+    \item CinC 2017: 5.154 registros normais + 771 com FA = 5.925 registros selecionados.
+    \item Proporção aproximada: 5.154/771 $\simeq$ 6,7:1.
+    \item A exclusão de outros ritmos e registros ruidosos impede comparar o F1 binário diretamente ao escore oficial do desafio.
+    \item Métricas calculadas por \textbf{registro}; a classe positiva é FA.
+  \end{itemize}
+  {\scriptsize Fonte: Clifford et al. (2017).}
 \end{frame}
 
 \end{document}
