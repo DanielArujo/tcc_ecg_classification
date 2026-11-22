@@ -29,9 +29,9 @@
 \usepackage[brazil]{babel}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta}
-\usepackage{pgfgantt}
 
 \usetheme{default}
 \useinnertheme{circles}
@@ -70,6 +70,13 @@
     \includegraphics[height=.45cm]{assets/logo-senac.png}%
   }{\fcolorbox{senacblue}{white}{\scriptsize\bfseries\color{senacblue}SENAC}}%
 }
+% Caixas de largura fixa e barras para os dois diagramas da apresentação.
+\newcommand{\caixafluxo}[1]{%
+  \fcolorbox{senacblue}{senacblue!7}{%
+    \parbox[c][1.15cm][c]{2.85cm}{\centering\scriptsize #1}}%
+}
+\newcommand{\barrames}{\textcolor{senacblue}{\rule{1.10cm}{.15cm}}}
+\newcommand{\marcocronograma}{\textcolor{senacorange}{$\bullet$}}
 \addtobeamertemplate{frametitle}{}{%
   \begin{tikzpicture}[remember picture,overlay]
     \node[anchor=north east,fill=white,rounded corners=2pt,inner sep=2pt]
@@ -221,22 +228,20 @@
 
 \begin{frame}{Solução proposta: fluxo experimental}
   \centering
-  \begin{tikzpicture}[
-    step/.style={draw=senacblue,rounded corners,fill=senacblue!8,align=center,
-                 minimum height=.8cm,text width=2.55cm,font=\scriptsize},
-    arr/.style={-{Stealth},thick,draw=senacorange}]
-    \node[step] (a) {CinC 2017\\ECG, 300 Hz};
-    \node[step,right=.33cm of a] (b) {Normal/FA\\5.925 registros};
-    \node[step,right=.33cm of b] (c) {Divisão estratificada\\70/15/15};
-    \node[step,below=.62cm of c] (d) {Pré-processamento\\30 s; Z-score};
-    \node[step,left=.33cm of d] (e) {Quatro combinações\\2 arquiteturas × 2 perdas};
-    \node[step,left=.33cm of e] (f) {Avaliação\\F1, estatística, custo};
-    \draw[arr] (a) -- (b); \draw[arr] (b) -- (c);
-    \draw[arr] (c) -- (d); \draw[arr] (d) -- (e); \draw[arr] (e) -- (f);
-  \end{tikzpicture}
-  \vspace{.45cm}
+  \resizebox{.93\linewidth}{!}{%
+    \begin{tabular}{@{}ccccc@{}}
+      \caixafluxo{CinC 2017\\ECG, 300 Hz} & $\longrightarrow$ &
+      \caixafluxo{Seleção Normal/FA\\5.925 registros} & $\longrightarrow$ &
+      \caixafluxo{Divisão estratificada\\70\% / 15\% / 15\%} \\[.18cm]
+      & & & & $\downarrow$ \\[.18cm]
+      \caixafluxo{Avaliação\\F1, estatística e custo} & $\longleftarrow$ &
+      \caixafluxo{Treinamento\\quatro configurações} & $\longleftarrow$ &
+      \caixafluxo{Pré-processamento\\30 s; Z-score} \\
+    \end{tabular}%
+  }
+  \vspace{.42cm}
 
-  \small Registros de “outro ritmo” e “ruidoso” ficam fora do recorte binário.
+  \small As classes “outro ritmo” e “ruidoso” não integram o recorte binário.
 \end{frame}
 
 \begin{frame}{Dados, divisão e pré-processamento}
@@ -280,25 +285,59 @@
 
 \begin{frame}{Cronograma do TCC2: fevereiro a junho de 2027}
   \centering
-  \resizebox{.98\textwidth}{!}{%
-  \begin{ganttchart}[
-      hgrid,vgrid,bar/.append style={fill=senacblue!55},
-      milestone/.append style={fill=senacorange},
-      bar label font=\scriptsize, title label font=\scriptsize,
-      x unit=1.15cm, y unit chart=.43cm,
-    ]{1}{5}
-    \gantttitle{Meses de 2027}{5} \\
-    \gantttitlelist{Fev,Mar,Abr,Mai,Jun}{1} \\
-    \ganttbar{Revisão e protocolo}{1}{2} \\
-    \ganttbar{Obtenção e preparação dos dados}{1}{2} \\
-    \ganttbar{Implementação e treinamento}{2}{3} \\
-    \ganttbar{Métricas, estatística e custo}{3}{4} \\
-    \ganttbar{Redação, ajustes e apresentação}{4}{5} \\
-    \ganttmilestone{Entrega final}{5}
-  \end{ganttchart}}
-  \vspace{.3cm}
+  \scriptsize
+  \renewcommand{\arraystretch}{1.08}
+  \begin{tabular}{@{}p{4.45cm}*{5}{>{\centering\arraybackslash}p{1.4cm}}@{}}
+    \toprule
+    \textbf{Atividade} & \textbf{Fevereiro} & \textbf{Março} & \textbf{Abril} & \textbf{Maio} & \textbf{Junho} \\
+    \midrule
+    \textbf{Fase 1: Planejamento} & \barrames & \barrames & & & \\
+    Revisão bibliográfica & \barrames & \barrames & & & \\
+    Definição do protocolo experimental & \barrames & & & & \\
+    \emph{Protocolo definido} & \marcocronograma & & & & \\
+    \midrule
+    \textbf{Fase 2: Preparação dos dados} & \barrames & \barrames & & & \\
+    Obtenção e exploração da base & \barrames & & & & \\
+    Pré-processamento dos sinais & \barrames & \barrames & & & \\
+    \emph{Base preparada} & & \marcocronograma & & & \\
+    \midrule
+    \textbf{Fase 3: Implementação dos modelos} & & \barrames & \barrames & & \\
+    Implementação da BiLSTM & & \barrames & & & \\
+    Implementação da CNN-BiLSTM & & \barrames & \barrames & & \\
+    Treinamento das quatro configurações & & & \barrames & & \\
+    \emph{Modelos implementados e treinados} & & & \marcocronograma & & \\
+    \bottomrule
+  \end{tabular}
+  \vspace{.16cm}
 
-  \scriptsize Síntese das fases do cronograma do Capítulo 3; atividades podem se sobrepor.
+  \scriptsize Fases 1 a 3 do cronograma do PDF; \textcolor{senacorange}{$\bullet$} indica marco.
+\end{frame}
+
+\begin{frame}{Cronograma do TCC2: avaliação e entrega}
+  \centering
+  \scriptsize
+  \renewcommand{\arraystretch}{1.1}
+  \begin{tabular}{@{}p{4.45cm}*{5}{>{\centering\arraybackslash}p{1.4cm}}@{}}
+    \toprule
+    \textbf{Atividade} & \textbf{Fevereiro} & \textbf{Março} & \textbf{Abril} & \textbf{Maio} & \textbf{Junho} \\
+    \midrule
+    \textbf{Fase 4: Avaliação experimental} & & & \barrames & \barrames & \\
+    Avaliação pelas métricas de classificação & & & \barrames & \barrames & \\
+    Análise estatística dos resultados & & & & \barrames & \\
+    Comparação do custo computacional & & & \barrames & \barrames & \\
+    \emph{Experimentos concluídos} & & & & \marcocronograma & \\
+    \midrule
+    \textbf{Fase 5: Finalização} & & & & \barrames & \barrames \\
+    Redação dos resultados e discussão & & & & \barrames & \barrames \\
+    Ajustes e retreinamentos, se necessários & & & & \barrames & \barrames \\
+    Revisão e formatação do TCC & & & & & \barrames \\
+    Preparação da apresentação & & & & & \barrames \\
+    \emph{Entrega final} & & & & & \marcocronograma \\
+    \bottomrule
+  \end{tabular}
+  \vspace{.2cm}
+
+  \scriptsize Fases 4 e 5 do cronograma do PDF; \textcolor{senacorange}{$\bullet$} indica marco.
 \end{frame}
 
 \section{Considerações finais}
