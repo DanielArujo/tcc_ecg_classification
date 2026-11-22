@@ -312,12 +312,18 @@ seguinte pergunta de pesquisa: em que medida a utilização da função de perda
 influencia o desempenho na classificação de fibrilação atrial em sinais de eletrocardiograma, considerando as arquiteturas 
 CNN-BiLSTM e BiLSTM?
 
-Parte-se da hipótese de que a utilização da Focal Loss proporciona uma melhoria superior a dois pontos percentuais no 
-F1-score da classe fibrilação atrial em comparação à Cross-Entropy, tanto na arquitetura CNN-BiLSTM quanto na BiLSTM. 
-O limiar de dois pontos percentuais é proposto como critério de relevância previamente estabelecido para a comparação.
+Parte-se da hipótese de que a utilização da Focal Loss
+proporciona uma melhoria média superior a dois pontos
+percentuais no F1-score da classe fibrilação atrial
+em comparação à Cross-Entropy, tanto na arquitetura
+CNN-BiLSTM quanto na BiLSTM. O limiar de dois pontos
+percentuais é proposto como critério de relevância
+previamente estabelecido para a comparação.
 
-A hipótese será investigada por meio de experimentos controlados e comparações estatísticas pareadas entre as funções 
-de perda, adotando-se um nível de significância de 5\%.
+A hipótese será investigada por meio de experimentos
+controlados e comparações estatísticas pareadas entre
+as funções de perda, adotando-se um nível de
+significância de 5\%.
 
 
 
@@ -659,19 +665,57 @@ bibliotecas como NumPy e Pandas para manipulação dos dados,
 Scikit-learn para divisão dos conjuntos e cálculo de métricas,
 e Matplotlib para geração de gráficos e visualização dos sinais.
 
+
 \subsection{Arquiteturas dos modelos}
-Serão investigadas duas arquiteturas de redes neurais: CNN-BiLSTM e BiLSTM.
 
-A arquitetura CNN-BiLSTM combinará uma rede neural convolucional unidimensional (CNN 1D) com uma rede de memória de longo e curto prazo 
-bidirecional (BiLSTM). Inicialmente, a camada convolucional será responsável pela extração de características locais dos sinais de ECG. Em 
-seguida, essas características serão encaminhadas à camada BiLSTM, responsável pelo processamento das dependências temporais considerando as 
-informações nos sentidos direto e reverso da sequência.
+Serão investigadas duas arquiteturas de redes neurais:
+CNN-BiLSTM e BiLSTM, destinadas à classificação binária
+de sinais de ECG entre ritmo normal e fibrilação atrial.
 
-A arquitetura BiLSTM, por sua vez, utilizará diretamente as características dos sinais de ECG como entrada para a camada recorrente bidirecional, 
-sem a utilização de uma etapa convolucional anterior.
+A arquitetura CNN-BiLSTM combinará uma rede neural
+convolucional unidimensional (CNN 1D) com uma rede de
+memória de longo e curto prazo bidirecional (BiLSTM).
+A etapa convolucional será composta por uma camada
+com 16 filtros, kernel de tamanho sete, função de
+ativação ReLU e preenchimento (\textit{padding}) de
+três amostras, preservando o comprimento da sequência.
+Em seguida, será aplicada uma operação de
+\textit{Average Pooling} com fator de redução quatro,
+diminuindo o comprimento de 9.000 para 2.250 passos
+temporais.
 
-A comparação entre essas arquiteturas permitirá investigar a contribuição da extração convolucional de características para a classificação da 
-fibrilação atrial, mantendo o processamento recorrente bidirecional como componente comum aos dois modelos.
+As características extraídas serão encaminhadas a
+duas camadas BiLSTM, com 64 unidades ocultas por
+direção e taxa de \textit{dropout} de 0,2 entre as
+camadas recorrentes. A representação resultante
+será utilizada por uma camada linear com uma saída,
+responsável pela classificação binária.
+
+A arquitetura BiLSTM, por sua vez, utilizará
+diretamente os sinais de ECG, sem a etapa convolucional.
+Inicialmente, será aplicada uma operação de
+\textit{Average Pooling} com fator de redução quatro,
+seguida por duas camadas BiLSTM com 64 unidades
+ocultas por direção e \textit{dropout} de 0,2
+entre as camadas. A classificação também será
+realizada por uma camada linear com uma saída.
+
+Considerando as configurações propostas, estima-se
+que a arquitetura CNN-BiLSTM apresente 141.569
+parâmetros treináveis, enquanto a BiLSTM apresente
+133.761 parâmetros. Essas quantidades serão
+confirmadas durante a implementação em PyTorch.
+
+A comparação entre essas arquiteturas permitirá
+investigar a contribuição da extração convolucional
+de características para a classificação da
+fibrilação atrial, mantendo o processamento
+recorrente bidirecional como componente comum
+aos dois modelos. A redução temporal foi proposta
+para diminuir o custo computacional, considerando
+os recursos de hardware disponíveis para a
+execução dos experimentos.
+
 
 \subsection{Configuração dos experimentos}
 Para investigar os efeitos das arquiteturas e das funções de perda, será adotado um desenho experimental fatorial 2 × 2. Nesse delineamento, serão considerados dois fatores: arquitetura da rede neural e função de perda.
@@ -721,14 +765,64 @@ A combinação desses fatores resultará em quatro configurações experimentais
 \end{table}
 
 
-A função Cross-Entropy será utilizada como referência para o treinamento dos modelos, enquanto a Focal Loss será investigada como alternativa 
-para lidar com o desbalanceamento entre as classes, atribuindo maior importância aos exemplos classificados com maior dificuldade.
+A função Cross-Entropy será utilizada em sua configuração
+tradicional, sem ponderação entre as classes, como
+referência para o treinamento dos modelos. A Focal Loss
+será investigada como alternativa para lidar com o
+desbalanceamento entre as classes, reduzindo a contribuição
+dos exemplos classificados com maior facilidade e
+permitindo atribuir pesos diferentes às classes.
 
-As quatro configurações serão submetidas ao mesmo protocolo de treinamento e avaliação. Serão definidos hiperparâmetros comuns, como tamanho do 
-lote (batch size), número de épocas e estratégia de otimização, além dos parâmetros específicos de cada arquitetura e função de perda.
+Para a Focal Loss, será adotado o parâmetro de
+focalização $\gamma = 2,0$, com pesos
+$\alpha_{\mathrm{FA}} = 0,75$ e
+$\alpha_{\mathrm{Normal}} = 0,25$.
+A escolha desses valores constitui uma configuração
+experimental inicial, buscando atribuir maior importância
+à classe minoritária, correspondente à fibrilação atrial.
 
-Os experimentos serão repetidos utilizando sementes aleatórias previamente definidas, possibilitando analisar a variabilidade dos resultados por 
-meio da média e do desvio-padrão das métricas obtidas.
+As quatro configurações experimentais serão submetidas
+ao mesmo protocolo de treinamento e avaliação.
+Serão utilizados hiperparâmetros comuns, incluindo
+o tamanho do lote, o número máximo de épocas e a
+estratégia de otimização, de modo a manter condições
+equivalentes de comparação entre os modelos.
+
+Cada uma das quatro configurações experimentais será
+executada oito vezes, utilizando oito sementes
+aleatórias previamente definidas, totalizando
+32 treinamentos. As mesmas sementes serão utilizadas
+nas quatro configurações, enquanto a divisão dos
+registros em conjuntos de treinamento, validação
+e teste será mantida fixa.
+
+Os resultados das repetições serão utilizados para
+calcular a média e o desvio-padrão das métricas
+obtidas, permitindo analisar a variabilidade do
+desempenho dos modelos.
+
+Para a análise estatística, será utilizado o teste
+t de Student pareado e unilateral, considerando
+um nível de significância de 5\%. O teste será
+aplicado separadamente às arquiteturas CNN-BiLSTM
+e BiLSTM, comparando os resultados obtidos com
+Cross-Entropy e Focal Loss nas oito repetições
+experimentais.
+
+Para cada arquitetura, serão calculadas as diferenças
+pareadas entre os valores de F1-score da classe
+fibrilação atrial obtidos com Focal Loss e
+Cross-Entropy. A hipótese estatística será formulada
+considerando uma diferença média superior a 0,02,
+correspondente a dois pontos percentuais.
+
+A aplicação do teste considerará a verificação
+dos pressupostos estatísticos, especialmente
+a distribuição aproximadamente normal das
+diferenças pareadas. A hipótese de pesquisa será
+considerada corroborada apenas se as duas
+arquiteturas apresentarem evidências estatísticas
+de melhoria média superior ao limiar estabelecido.
 
 
 \subsection{Critérios de avaliação}
