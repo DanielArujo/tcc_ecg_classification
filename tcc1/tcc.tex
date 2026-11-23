@@ -36,6 +36,7 @@
 \usepackage[brazilian,hyperpageref]{backref}  % Páginas com citações
 \usepackage[alf]{abntex2cite}       % Citações ABNT
 
+
 % ---------------------------------------------------------------
 % CONFIGURAÇÕES DO PDF
 % ---------------------------------------------------------------
@@ -188,26 +189,40 @@ A lista a seguir reúne as abreviaturas e siglas utilizadas neste trabalho, acom
 \vspace{\onelineskip}
 
 \begin{center}
-\begin{tabular}{@{}p{3.2cm}p{0.6\textwidth}@{}}
+\begin{tabular}{@{}p{3.8cm}p{0.62\textwidth}@{}}
 \toprule
 \textbf{Abreviatura/Sigla} & \textbf{Significado} \\
 \midrule
+
 AUC & \textit{Area Under the Curve} (Área sob a Curva) \\
+
+AUC-PR & \textit{Area Under the Precision-Recall Curve} (Área sob a Curva Precisão-Revocação) \\
+
+BiLSTM & \textit{Bidirectional Long Short-Term Memory} \\
+
+CinC & \textit{Computing in Cardiology} \\
 
 CNN & \textit{Convolutional Neural Network} (Rede Neural Convolucional) \\
 
 ECG & Eletrocardiograma \\
 
-FA & Fibrilação Atrial \\
-
 F1-score & Medida harmônica entre precisão e revocação \\
 
-BiLSTM & \textit{Bidirectional Long Short-Term Memory} \\
+FA & Fibrilação Atrial \\
+
+GWO & \textit{Grey Wolf Optimizer} \\
 
 LSTM & \textit{Long Short-Term Memory} \\
 
+MIT-BIH & Massachusetts Institute of Technology--Beth Israel Hospital \\
+
+ReLU & \textit{Rectified Linear Unit} \\
+
+RNN & \textit{Recurrent Neural Network} \\
+
 ROC & \textit{Receiver Operating Characteristic} \\
 
+SMOTE & \textit{Synthetic Minority Over-sampling Technique} \\
 
 \bottomrule
 \end{tabular}
@@ -256,8 +271,8 @@ como ritmo normal e 771 como fibrilação atrial. Os registros possuem frequênc
 
 Nesse cenário, além da escolha da arquitetura, a função utilizada durante o treinamento também pode influenciar o comportamento 
 do modelo. A Cross-Entropy é uma função de perda amplamente utilizada em problemas de classificação, enquanto a Focal Loss 
-foi proposta por Lin et al. (2017) para reduzir a contribuição dos exemplos mais fáceis durante o treinamento, direcionando 
-maior atenção aos exemplos difíceis \cite{Lin2017}. Assim, a comparação entre essas funções pode ajudar a compreender 
+foi proposta por \citeonline{Lin2017} para reduzir a contribuição dos exemplos mais fáceis durante o treinamento, direcionando 
+maior atenção aos exemplos difíceis. Assim, a comparação entre essas funções pode ajudar a compreender 
 seus efeitos em diferentes arquiteturas de classificação de ECG.
 
 Dessa forma, este trabalho propõe uma comparação experimental entre as arquiteturas CNN-BiLSTM e BiLSTM, 
@@ -416,7 +431,7 @@ Cross-Entropy e Focal Loss por meio de métricas de desempenho e custo computaci
 \begin{enumerate}
     \item Realizar o pré-processamento dos sinais de ECG do conjunto PhysioNet/CinC 2017, considerando as classes Normal e Fibrilação Atrial;
     \item Implementar e treinar as duas arquiteturas propostas, CNN-BiLSTM e BiLSTM, utilizando as funções de perda Cross-Entropy e Focal Loss;
-    \item Avaliar e comparar o desempenho das quatro configurações experimentais por meio de Accuracy, Precision, Recall, Specificity, F1-score e matriz de confusão;
+    \item Avaliar e comparar o desempenho das quatro configurações experimentais por meio das métricas de acurácia, precisão, revocação (sensibilidade), especificidade, medida F1(F1-score), área sob a curva ROC (AUC-ROC), área sob a curva precisão-revocação (AUC-PR) e matriz de confusão;
     \item Analisar o impacto das funções de perda Cross-Entropy e Focal Loss, especialmente sobre a classificação da classe minoritária de Fibrilação Atrial;
     \item Comparar o custo computacional das abordagens, considerando tempo de treinamento, tempo de inferência e quantidade de parâmetros, identificando a configuração com melhor relação entre desempenho e custo computacional.
 \end{enumerate}
@@ -583,7 +598,7 @@ A Figura~\ref{fig:arquitetura} apresenta uma representação geral do fluxo prop
     \centering
     \caption{Arquitetura proposta para o sistema de classificação de sinais ECG.}
     \label{fig:arquitetura}
-    \includegraphics[width=0.75\textwidth]{assets/fluxograma_tcc.jpg}
+    \includegraphics[width=0.75\textwidth]{assets/fluxograma_arquitetura.png}
     \legend{Fonte: Elaborado pelos autores (2026)}
 \end{figure}
 
@@ -892,10 +907,14 @@ fibrilação atrial e custo computacional.
 
 
 
+
+
 \section{Cronograma de trabalho}
 \label{sec:cronograma}
 
-O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades previstas para o desenvolvimento do TCC2, distribuídas entre fevereiro e junho de 2027.
+O cronograma a seguir apresenta, no formato de diagrama
+de Gantt, as atividades previstas para o desenvolvimento
+do TCC2, distribuídas entre fevereiro e junho de 2027.
 
 \begin{figure}[htb]
     \centering
@@ -905,18 +924,21 @@ O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades 
     \begin{ganttchart}[
         hgrid,
         vgrid,
-        x unit=1.45cm,
+        x unit=1.65cm,
         y unit title=0.6cm,
         y unit chart=0.7cm,
         title height=1,
         bar height=0.5,
         bar label font=\scriptsize,
-        title label font=\small,
+        title label font=\scriptsize,
         milestone label font=\scriptsize\itshape,
         group label font=\scriptsize\bfseries,
         bar/.append style={fill=blue!40},
         group/.append style={draw=black, fill=blue!70},
         milestone/.append style={fill=red!70},
+        bar label node/.append style={anchor=east, xshift=-0.5cm},
+        group label node/.append style={anchor=east, xshift=-0.5cm},
+        milestone label node/.append style={anchor=east, xshift=-0.5cm},
     ]{1}{5}
 
         \gantttitle{Meses de 2027}{5} \\
@@ -928,7 +950,7 @@ O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades 
         \gantttitle{Junho}{1} \\
 
         % Fase 1: Planejamento
-        \ganttgroup{Fase 1: Planejamento}{1}{1} \\
+        \ganttgroup{Fase 1: Planejamento}{1}{2} \\
         \ganttbar{Revisão bibliográfica}{1}{2} \\
         \ganttbar{Definição do protocolo experimental}{1}{1} \\
         \ganttmilestone{Protocolo definido}{1} \\
@@ -963,8 +985,9 @@ O cronograma a seguir apresenta, no formato de diagrama de Gantt, as atividades 
 
     \end{ganttchart}
 
-    \legend{Fonte: Elaborado pelos autores (2027).}
+    \legend{Fonte: Elaborado pelos autores (2026).}
 \end{figure}
+
 
 %\textbf{Instruções para personalização do cronograma}:
 %\begin{itemize}
