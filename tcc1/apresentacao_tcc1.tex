@@ -251,14 +251,14 @@
     \item Divisão por registro, estratificada: \textbf{70\% treino, 15\% validação, 15\% teste}; idêntica para as quatro configurações.
     \item Z-score: média e desvio-padrão calculados somente com amostras válidas do treino; aplicar aos demais conjuntos e preencher com zeros \textbf{depois}.
   \end{itemize}
-  \small Ferramentas previstas: Python, WFDB, PyTorch, NumPy, Pandas, scikit-learn e Matplotlib.
+  \small Ferramentas previstas: Python, WFDB, PyTorch, NumPy, Pandas, scikit-learn, SciPy e Matplotlib.
 \end{frame}
 
 \begin{frame}{Arquiteturas e funções de perda}
   \begin{columns}[T,onlytextwidth]
     \column{.49\textwidth}
     \begin{block}{BiLSTM}
-      \small
+      \footnotesize
       \begin{itemize}
         \item ECG (9.000 amostras) $\rightarrow$ Average Pooling (fator 4).
         \item Duas camadas BiLSTM: 64 unidades por direção; dropout de 0,2 entre elas.
@@ -268,7 +268,7 @@
     \end{block}
     \column{.49\textwidth}
     \begin{block}{CNN-BiLSTM}
-      \small
+      \footnotesize
       \begin{itemize}
         \item Conv1D: 16 filtros, kernel 7, padding 3 e ReLU; Average Pooling (fator 4).
         \item As mesmas duas camadas BiLSTM: 64 unidades por direção; dropout de 0,2.
@@ -277,8 +277,8 @@
       \centering \textbf{141.569 parâmetros previstos}
     \end{block}
   \end{columns}
-  \vspace{.2cm}
-  \small \textbf{Em ambas:} Cross-Entropy sem pesos ou Focal Loss com $\gamma=2$, $\alpha_{\mathrm{FA}}=0{,}75$ e $\alpha_{\mathrm{Normal}}=0{,}25$.
+  \vspace{.15cm}
+  \small \textbf{Em ambas:} CE sem pesos ou Focal Loss com $\gamma=2$, $\alpha_{\mathrm{FA}}=0{,}75$ e $\alpha_{\mathrm{Normal}}=0{,}25$.
 \end{frame}
 
 \begin{frame}{Experimento fatorial 2 × 2}
@@ -293,21 +293,37 @@
   \end{tabular}
   \vspace{.45cm}
 
+  \small
   \begin{itemize}
-    \item Comparação da perda dentro de cada arquitetura: E2 × E1 e E4 × E3.
-    \item Comparação da etapa convolucional sob a mesma perda: E1 × E3 e E2 × E4.
-    \item Mesmo conjunto de teste e protocolo de avaliação para as quatro células.
+    \item Perda em cada arquitetura, \textbf{com teste estatístico}: E2 × E1 e E4 × E3.
+    \item Etapa convolucional sob a mesma perda, \textbf{descritiva}: E1 × E3 e E2 × E4.
+    \item CE sem pesos × FL com $\gamma=2$ e $\alpha_{\mathrm{FA}}=0{,}75$: mede o \textbf{efeito conjunto} da focalização e do peso de classe.
+    \item $\alpha_{\mathrm{FA}}=0{,}75$ fica entre a ausência de peso (0,5) e a frequência inversa (0,87); Lin et al. (2017) usaram 0,25 em detecção de objetos, com desbalanceamento extremo.
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Protocolo de treinamento}
+  \begin{itemize}
+    \item \textbf{Otimização:} Adam, taxa de aprendizado $10^{-3}$, lotes de 32 registros, até 50 épocas.
+    \item \textbf{Parada antecipada:} 10 épocas sem melhora do F1 de FA na validação.
+    \item \textbf{Seleção do modelo:} época com maior F1 de FA na validação; a perda não serve, pois CE e FL têm escalas diferentes.
+    \item \textbf{Limiar de decisão:} 0,5 fixo sobre a saída sigmoide; AUC-ROC e AUC-PR independem de limiar.
+    \item \textbf{Repetições:} 8 sementes × 4 configurações = \textbf{32 treinamentos}; mesma divisão; teste usado uma única vez.
+    \item \textbf{Ambiente:} AMD Ryzen 5 5600; NVIDIA GeForce GTX 1650; 16 GB RAM; SSD de aproximadamente 700 GB.
+  \end{itemize}
+  {\scriptsize Fonte: Kingma e Ba (2015).}
+\end{frame}
+
 \begin{frame}{Avaliação, estatística e custo}
+  \small
   \begin{itemize}
     \item \textbf{Desempenho:} F1 de FA como métrica principal; revocação, precisão, especificidade, acurácia, AUC-ROC e AUC-PR como complementares.
-    \item \textbf{Repetições:} oito sementes por configuração, \textbf{32 treinamentos}; mesma divisão dos dados; reportar média e desvio-padrão.
-    \item \textbf{Teste:} t de Student pareado e unilateral, separadamente em cada arquitetura; verificar normalidade das diferenças. Testar ganho médio de F1 com Focal Loss \textbf{superior a 0,02}, com significância de 5\%.
+    \item \textbf{Hipóteses}, em cada arquitetura: $H_0:\mu_d\leq 0{,}02$ e $H_1:\mu_d>0{,}02$, em que $d_s=F1_{\mathrm{FL},s}-F1_{\mathrm{CE},s}$ é a diferença em cada semente.
+    \item \textbf{Teste:} t de Student pareado e unilateral, $\alpha=5\%$. Normalidade por Shapiro--Wilk; se rejeitada, Wilcoxon pareado. Hipótese corroborada só se $H_0$ for rejeitada \textbf{nas duas arquiteturas}.
+    \item \textbf{Arquitetura e interação:} descritivas (média, desvio-padrão e IC de 95\%).
     \item \textbf{Custo:} tempo de treinamento, latência por registro e quantidade de parâmetros treináveis.
-    \item \textbf{Ambiente previsto:} AMD Ryzen 5 5600; NVIDIA GeForce GTX 1650; 16 GB RAM; SSD de aproximadamente 700 GB.
   \end{itemize}
+  {\scriptsize Fontes: Shapiro e Wilk (1965); Wilcoxon (1945).}
 \end{frame}
 
 \begin{frame}{Cronograma do TCC2: fevereiro a junho de 2027}
@@ -372,7 +388,7 @@
 \begin{frame}{Resultados esperados e próximos passos}
   \begin{itemize}
     \item Estimar o efeito de Focal Loss sobre o F1 da classe FA \textbf{em cada arquitetura}.
-    \item Examinar se acrescentar a CNN traz ganho diante do tempo e dos parâmetros adicionais.
+    \item Descrever se acrescentar a CNN traz ganho diante do tempo e dos parâmetros adicionais.
     \item Executar as \textbf{32 rodadas} do desenho 2 × 2 e avaliar se o ganho médio supera 2 pontos percentuais nas duas arquiteturas.
     \item Reportar as limitações do recorte binário: outros ritmos e sinais ruidosos ficam fora da avaliação.
   \end{itemize}

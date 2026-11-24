@@ -431,7 +431,7 @@ Cross-Entropy e Focal Loss por meio de métricas de desempenho e custo computaci
 \begin{enumerate}
     \item Realizar o pré-processamento dos sinais de ECG do conjunto PhysioNet/CinC 2017, considerando as classes Normal e Fibrilação Atrial;
     \item Implementar e treinar as duas arquiteturas propostas, CNN-BiLSTM e BiLSTM, utilizando as funções de perda Cross-Entropy e Focal Loss;
-    \item Avaliar e comparar o desempenho das quatro configurações experimentais por meio das métricas de acurácia, precisão, revocação (sensibilidade), especificidade, medida F1(F1-score), área sob a curva ROC (AUC-ROC), área sob a curva precisão-revocação (AUC-PR) e matriz de confusão;
+    \item Avaliar e comparar o desempenho das quatro configurações experimentais por meio das métricas de acurácia, precisão, revocação (sensibilidade), especificidade, medida F1 (F1-score), área sob a curva ROC (AUC-ROC), área sob a curva precisão-revocação (AUC-PR) e matriz de confusão;
     \item Analisar o impacto das funções de perda Cross-Entropy e Focal Loss, especialmente sobre a classificação da classe minoritária de Fibrilação Atrial;
     \item Comparar o custo computacional das abordagens, considerando tempo de treinamento, tempo de inferência e quantidade de parâmetros, identificando a configuração com melhor relação entre desempenho e custo computacional.
 \end{enumerate}
@@ -578,19 +578,20 @@ O desenvolvimento da solução será organizado em etapas, iniciando pela aquisi
 treinamento, validação e avaliação dos resultados.
 
 Inicialmente, serão selecionados os registros correspondentes às classes Normal e Fibrilação Atrial da base PhysioNet/CinC Challenge 
-2017. Em seguida, os sinais passarão por procedimentos de pré-processamento, necessários para adequar os registros às entradas das redes neurais.
+2017. Em seguida, os registros selecionados serão divididos de forma estratificada em conjuntos de treinamento, validação e teste e, depois,
+passarão por procedimentos de pré-processamento, necessários para adequar os registros às entradas das redes neurais.
 
 Após a preparação dos dados, serão implementadas as arquiteturas CNN-BiLSTM e BiLSTM. Cada arquitetura será treinada utilizando as duas 
 funções de perda selecionadas, resultando em quatro configurações experimentais.
 
 Por fim, os resultados serão comparados considerando métricas de desempenho, análise estatística e custo computacional. Essa abordagem 
-permitirá investigar os efeitos individuais das arquiteturas e das funções de perda, bem como a interação entre esses dois fatores.
+permitirá testar estatisticamente o efeito da função de perda em cada arquitetura e descrever o efeito da arquitetura e a interação entre esses dois fatores.
 
 
 \subsection{Arquitetura da solução}
 
-A arquitetura da solução será organizada em um fluxo de processamento composto por aquisição dos dados, seleção das classes, pré-processamento, 
-divisão dos conjuntos de dados, treinamento dos modelos e avaliação dos resultados.
+A arquitetura da solução será organizada em um fluxo de processamento composto por aquisição dos dados, seleção das classes, divisão dos conjuntos de dados,
+pré-processamento, treinamento dos modelos e avaliação dos resultados.
 
 A Figura~\ref{fig:arquitetura} apresenta uma representação geral do fluxo proposto para o desenvolvimento do experimento.
 
@@ -678,7 +679,7 @@ será empregado na construção, treinamento e avaliação das
 arquiteturas de redes neurais. Também poderão ser utilizadas
 bibliotecas como NumPy e Pandas para manipulação dos dados,
 Scikit-learn para divisão dos conjuntos e cálculo de métricas,
-e Matplotlib para geração de gráficos e visualização dos sinais.
+SciPy para os testes estatísticos e Matplotlib para geração de gráficos e visualização dos sinais.
 
 
 \subsection{Arquiteturas dos modelos}
@@ -733,6 +734,7 @@ execução dos experimentos.
 
 
 \subsection{Configuração dos experimentos}
+\label{subsec:config_experimentos}
 Para investigar os efeitos das arquiteturas e das funções de perda, será adotado um desenho experimental fatorial 2 × 2. Nesse delineamento, serão considerados dois fatores: arquitetura da rede neural e função de perda.
 
 O primeiro fator será composto pelas arquiteturas CNN-BiLSTM e BiLSTM. O segundo será composto pelas funções Cross-Entropy e Focal Loss.
@@ -789,19 +791,63 @@ dos exemplos classificados com maior facilidade e
 permitindo atribuir pesos diferentes às classes.
 
 Para a Focal Loss, será adotado o parâmetro de
-focalização $\gamma = 2,0$, com pesos
-$\alpha_{\mathrm{FA}} = 0,75$ e
-$\alpha_{\mathrm{Normal}} = 0,25$.
-A escolha desses valores constitui uma configuração
-experimental inicial, buscando atribuir maior importância
-à classe minoritária, correspondente à fibrilação atrial.
+focalização $\gamma = 2{,}0$, com pesos
+$\alpha_{\mathrm{FA}} = 0{,}75$ e
+$\alpha_{\mathrm{Normal}} = 0{,}25$.
+O valor $\gamma = 2$ é o que apresentou melhor resultado
+no estudo original de \citeonline{Lin2017}. Nesse estudo,
+o melhor $\alpha$ associado a $\gamma = 2$ foi 0,25 para
+a classe rara; porém, esse valor foi obtido em detecção
+de objetos, em que o desbalanceamento é extremo e o
+próprio fator de focalização já reduz bastante a
+contribuição dos numerosos exemplos negativos fáceis.
+No recorte deste trabalho, o desbalanceamento é moderado
+(aproximadamente 6,7 registros normais para cada registro
+com FA) e o objetivo é priorizar a classe FA. Por isso,
+adota-se $\alpha_{\mathrm{FA}} = 0{,}75$, valor
+intermediário entre a ausência de ponderação
+($\alpha = 0{,}5$) e a ponderação pela frequência inversa
+das classes ($5.154/5.925 \approx 0{,}87$). Esses valores
+serão fixados antes dos experimentos e não serão
+ajustados com base nos resultados.
+
+Como a Cross-Entropy será utilizada sem pesos e a
+Focal Loss com $\gamma = 2$ e $\alpha_{\mathrm{FA}} = 0{,}75$,
+a comparação entre elas medirá o efeito conjunto da
+focalização e da ponderação de classes, e não o efeito
+isolado de $\gamma$, conforme discutido a partir da
+Equação~\ref{eq:focal_binaria}. Separar esses dois
+componentes exigiria configurações adicionais, como a
+Cross-Entropy ponderada, que estão fora do escopo
+deste trabalho.
 
 As quatro configurações experimentais serão submetidas
-ao mesmo protocolo de treinamento e avaliação.
-Serão utilizados hiperparâmetros comuns, incluindo
-o tamanho do lote, o número máximo de épocas e a
-estratégia de otimização, de modo a manter condições
-equivalentes de comparação entre os modelos.
+ao mesmo protocolo de treinamento e avaliação, com os
+mesmos hiperparâmetros. Será utilizado o otimizador
+Adam \cite{Kingma2015}, com taxa de aprendizado de
+$10^{-3}$, lotes de 32 registros e no máximo 50 épocas
+de treinamento. Ao final de cada época, será calculado
+o F1-score da classe FA no conjunto de validação. O
+treinamento será interrompido antecipadamente se essa
+métrica não melhorar por 10 épocas consecutivas, e será
+mantido o modelo da época com maior F1-score de FA na
+validação. O critério de seleção utiliza a métrica
+principal, e não a perda de validação, porque
+Cross-Entropy e Focal Loss produzem valores em escalas
+diferentes. O conjunto de teste será utilizado uma
+única vez em cada treinamento, após a seleção do modelo.
+
+A saída da camada linear será convertida em
+probabilidade de FA pela função sigmoide. Para o
+cálculo do F1-score, da precisão, da revocação, da
+especificidade e da acurácia, será adotado o limiar
+de decisão fixo de 0,5, sem ajuste por configuração.
+Com o limiar fixo, a comparação reflete o efeito da
+função de perda sobre o modelo treinado, incluindo
+eventuais alterações nas probabilidades produzidas,
+sem acrescentar um parâmetro escolhido a partir dos
+dados. A AUC-ROC e a AUC-PR complementarão essa
+análise, pois não dependem de um limiar específico.
 
 Cada uma das quatro configurações experimentais será
 executada oito vezes, utilizando oito sementes
@@ -816,28 +862,58 @@ calcular a média e o desvio-padrão das métricas
 obtidas, permitindo analisar a variabilidade do
 desempenho dos modelos.
 
-Para a análise estatística, será utilizado o teste
-t de Student pareado e unilateral, considerando
-um nível de significância de 5\%. O teste será
-aplicado separadamente às arquiteturas CNN-BiLSTM
-e BiLSTM, comparando os resultados obtidos com
-Cross-Entropy e Focal Loss nas oito repetições
-experimentais.
+Para cada arquitetura e cada semente $s$, será
+calculada a diferença pareada
+$d_s = F1_{\mathrm{FL},s} - F1_{\mathrm{CE},s}$ entre
+os F1-scores da classe FA no conjunto de teste,
+obtidos com Focal Loss e com Cross-Entropy. O
+pareamento se justifica pelo uso da mesma semente e
+da mesma divisão dos dados nas duas funções de perda.
+Sendo $\mu_d$ a diferença média, as hipóteses
+estatísticas serão:
+\begin{equation}
+    H_0: \mu_d \leq 0{,}02
+    \qquad \text{versus} \qquad
+    H_1: \mu_d > 0{,}02,
+    \label{eq:hipoteses}
+\end{equation}
+em que 0,02 corresponde ao limiar de relevância de
+dois pontos percentuais definido na
+Seção~\ref{sec:problema_hipotese}.
 
-Para cada arquitetura, serão calculadas as diferenças
-pareadas entre os valores de F1-score da classe
-fibrilação atrial obtidos com Focal Loss e
-Cross-Entropy. A hipótese estatística será formulada
-considerando uma diferença média superior a 0,02,
-correspondente a dois pontos percentuais.
+Em cada arquitetura, as hipóteses serão avaliadas
+pelo teste t de Student pareado e unilateral, ao
+nível de significância de 5\%, aplicado às oito
+diferenças deslocadas $d_s - 0{,}02$. Antes, a
+normalidade das diferenças será verificada pelo teste
+de Shapiro--Wilk \cite{Shapiro1965}, também a 5\%.
+Caso a normalidade seja rejeitada, será utilizado o
+teste dos postos sinalizados de Wilcoxon, pareado e
+unilateral \cite{Wilcoxon1945}, aplicado às mesmas
+diferenças deslocadas. Com oito pares, o menor
+valor-p exato desse teste é $1/256 \approx 0{,}004$,
+o que permite rejeitar $H_0$ ao nível adotado.
 
-A aplicação do teste considerará a verificação
-dos pressupostos estatísticos, especialmente
-a distribuição aproximadamente normal das
-diferenças pareadas. A hipótese de pesquisa será
-considerada corroborada apenas se as duas
-arquiteturas apresentarem evidências estatísticas
-de melhoria média superior ao limiar estabelecido.
+A hipótese de pesquisa será considerada corroborada
+apenas se $H_0$ for rejeitada nas duas arquiteturas.
+Como a conclusão exige a rejeição nos dois testes,
+e não em pelo menos um deles, o nível de significância
+global permanece limitado a 5\% sem correção para
+comparações múltiplas.
+
+O efeito da arquitetura e a interação entre
+arquitetura e função de perda serão analisados de
+forma descritiva, sem teste de hipótese. Para cada
+função de perda, serão reportadas a média, o
+desvio-padrão e o intervalo de confiança de 95\% das
+diferenças pareadas de F1-score de FA entre
+CNN-BiLSTM e BiLSTM (E1 $\times$ E3 e E2 $\times$ E4).
+A interação será descrita pela diferença entre o ganho
+médio da Focal Loss na CNN-BiLSTM e o ganho médio na
+BiLSTM. Esses resultados serão interpretados em
+conjunto com o custo computacional de cada
+arquitetura, sem serem tratados como confirmação
+estatística.
 
 
 \subsection{Critérios de avaliação}
@@ -871,9 +947,10 @@ equivalentes de avaliação.
 
 Por fim, os resultados das quatro configurações serão comparados
 considerando as médias e os desvios-padrão das métricas obtidas
-nas repetições experimentais. Também será realizada uma análise
-estatística para investigar a significância das diferenças
-observadas entre as arquiteturas e funções de perda.
+nas repetições experimentais. O efeito da função de perda será
+submetido aos testes de hipótese descritos na
+Subseção~\ref{subsec:config_experimentos}, enquanto as diferenças
+entre as arquiteturas serão analisadas de forma descritiva.
 
 Essa avaliação permitirá identificar a configuração que apresenta
 o melhor equilíbrio entre desempenho na classificação da
