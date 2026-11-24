@@ -254,6 +254,33 @@
   \small Ferramentas previstas: Python, WFDB, PyTorch, NumPy, Pandas, scikit-learn e Matplotlib.
 \end{frame}
 
+\begin{frame}{Arquiteturas e funções de perda}
+  \begin{columns}[T,onlytextwidth]
+    \column{.49\textwidth}
+    \begin{block}{BiLSTM}
+      \small
+      \begin{itemize}
+        \item ECG (9.000 amostras) $\rightarrow$ Average Pooling (fator 4).
+        \item Duas camadas BiLSTM: 64 unidades por direção; dropout de 0,2 entre elas.
+        \item Camada linear com uma saída.
+      \end{itemize}
+      \centering \textbf{133.761 parâmetros previstos}
+    \end{block}
+    \column{.49\textwidth}
+    \begin{block}{CNN-BiLSTM}
+      \small
+      \begin{itemize}
+        \item Conv1D: 16 filtros, kernel 7, padding 3 e ReLU; Average Pooling (fator 4).
+        \item As mesmas duas camadas BiLSTM: 64 unidades por direção; dropout de 0,2.
+        \item Camada linear com uma saída.
+      \end{itemize}
+      \centering \textbf{141.569 parâmetros previstos}
+    \end{block}
+  \end{columns}
+  \vspace{.2cm}
+  \small \textbf{Em ambas:} Cross-Entropy sem pesos ou Focal Loss com $\gamma=2$, $\alpha_{\mathrm{FA}}=0{,}75$ e $\alpha_{\mathrm{Normal}}=0{,}25$.
+\end{frame}
+
 \begin{frame}{Experimento fatorial 2 × 2}
   \centering
   \begin{tabular}{lcc}
@@ -276,11 +303,11 @@
 \begin{frame}{Avaliação, estatística e custo}
   \begin{itemize}
     \item \textbf{Desempenho:} F1 de FA como métrica principal; revocação, precisão, especificidade, acurácia, AUC-ROC e AUC-PR como complementares.
-    \item \textbf{Repetições:} reportar média e desvio-padrão; comparar as perdas de modo pareado, ao nível de 5\%.
+    \item \textbf{Repetições:} oito sementes por configuração, \textbf{32 treinamentos}; mesma divisão dos dados; reportar média e desvio-padrão.
+    \item \textbf{Teste:} t de Student pareado e unilateral, separadamente em cada arquitetura; verificar normalidade das diferenças. Testar ganho médio de F1 com Focal Loss \textbf{superior a 0,02}, com significância de 5\%.
     \item \textbf{Custo:} tempo de treinamento, latência por registro e quantidade de parâmetros treináveis.
     \item \textbf{Ambiente previsto:} AMD Ryzen 5 5600; NVIDIA GeForce GTX 1650; 16 GB RAM; SSD de aproximadamente 700 GB.
   \end{itemize}
-  \small Quantidade de repetições, hiperparâmetros e teste estatístico específico ainda precisam ser fixados no protocolo antes da execução.
 \end{frame}
 
 \begin{frame}{Cronograma do TCC2: fevereiro a junho de 2027}
@@ -346,7 +373,7 @@
   \begin{itemize}
     \item Estimar o efeito de Focal Loss sobre o F1 da classe FA \textbf{em cada arquitetura}.
     \item Examinar se acrescentar a CNN traz ganho diante do tempo e dos parâmetros adicionais.
-    \item Concluir a especificação reprodutível de camadas, hiperparâmetros, sementes e teste estatístico antes dos treinamentos.
+    \item Executar as \textbf{32 rodadas} do desenho 2 × 2 e avaliar se o ganho médio supera 2 pontos percentuais nas duas arquiteturas.
     \item Reportar as limitações do recorte binário: outros ritmos e sinais ruidosos ficam fora da avaliação.
   \end{itemize}
   \small Os resultados são esperados: a proposta ainda não apresenta modelos treinados nem ganhos comprovados.
