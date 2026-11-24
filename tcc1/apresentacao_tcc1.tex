@@ -306,9 +306,9 @@
   \begin{itemize}
     \item \textbf{Otimização:} Adam, taxa de aprendizado $10^{-3}$, lotes de 32 registros, até 50 épocas.
     \item \textbf{Parada antecipada:} 10 épocas sem melhora do F1 de FA na validação.
-    \item \textbf{Seleção do modelo:} época com maior F1 de FA na validação; a perda não serve, pois CE e FL têm escalas diferentes.
+    \item \textbf{Seleção do modelo:} época com maior F1 de FA na validação.
     \item \textbf{Limiar de decisão:} 0,5 fixo sobre a saída sigmoide; AUC-ROC e AUC-PR independem de limiar.
-    \item \textbf{Repetições:} 8 sementes × 4 configurações = \textbf{32 treinamentos}; mesma divisão; teste usado uma única vez.
+    \item \textbf{Repetições:} 8 sementes × 4 configurações = \textbf{32 treinamentos}; mesma divisão; teste reservado exclusivamente à avaliação final de cada modelo.
     \item \textbf{Ambiente:} AMD Ryzen 5 5600; NVIDIA GeForce GTX 1650; 16 GB RAM; SSD de aproximadamente 700 GB.
   \end{itemize}
   {\scriptsize Fonte: Kingma e Ba (2015).}
