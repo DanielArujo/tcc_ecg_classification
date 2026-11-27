@@ -112,24 +112,43 @@
 
 \begin{frame}{Contexto: ECG e fibrilação atrial}
   \begin{itemize}
-    \item O eletrocardiograma (ECG) registra a atividade elétrica cardíaca.
-    \item A fibrilação atrial (FA) é um ritmo irregular que pode ser identificado no ECG; a análise de registros curtos motiva a classificação automática.
-    \item O desafio PhysioNet/CinC 2017 fornece ECG de derivação única: 8.528 registros de treinamento, entre eles 5.154 normais e 771 com FA.
-  \end{itemize}
-  \begin{block}{Recorte do TCC}
-    Classificação binária de 5.925 registros Normal/FA; aproximadamente 6,7 registros normais para cada registro com FA.
-  \end{block}
-  {\scriptsize Fonte: Clifford et al. (2017).}
-\end{frame}
+    \item O eletrocardiograma (ECG) registra
+    a atividade elétrica cardíaca.
 
+    \item A fibrilação atrial (FA) é uma
+    arritmia caracterizada pela atividade
+    elétrica atrial desorganizada.
+
+    \item Técnicas de aprendizado profundo
+    podem auxiliar na classificação automática
+    de sinais de ECG.
+  \end{itemize}
+
+  \begin{block}{Desafio da classificação}
+    O desbalanceamento entre as classes pode
+    dificultar o aprendizado e a identificação
+    da classe minoritária.
+  \end{block}
+
+  {\scriptsize Fontes: Van Gelder et al. (2024);
+  Clifford et al. (2017); Lin et al. (2017).}
+\end{frame}
 \begin{frame}{Pergunta e hipótese de pesquisa}
   \begin{block}{Pergunta}
-    Em que medida a Focal Loss, em comparação à Cross-Entropy, influencia a classificação de FA em ECG nas arquiteturas CNN-BiLSTM e BiLSTM?
+    De que forma a Focal Loss, em comparação à
+    Cross-Entropy, influencia o desempenho das
+    redes neurais na classificação de FA em
+    sinais de ECG?
   \end{block}
+
   \begin{block}{Hipótese a testar}
-    A Focal Loss proporciona uma melhoria média superior a \textbf{2 pontos percentuais} no F1 da classe FA em relação à Cross-Entropy,\textbf{em cada arquitetura}.
+    A Focal Loss proporciona um \textbf{F1-score
+    médio da classe FA superior} ao obtido com
+    a Cross-Entropy, em ambas as arquiteturas.
   \end{block}
-  \small A comparação será pareada e adotará nível de significância de 5\%. O limiar de 2 pontos percentuais é um critério de relevância definido para este estudo.
+
+  \small A comparação será pareada e adotará
+  nível de significância de 5\%.
 \end{frame}
 
 \begin{frame}{Justificativa e diferencial}
@@ -144,10 +163,14 @@
 
 \begin{frame}{Objetivos}
   \begin{block}{Objetivo principal}
-    Comparar experimentalmente CNN-BiLSTM e BiLSTM na classificação de FA, avaliando o impacto da Cross-Entropy e da Focal Loss no desempenho e no custo computacional.
+    Investigar experimentalmente o impacto das
+    funções de perda Cross-Entropy e Focal Loss
+    na classificação de FA, considerando as
+    arquiteturas CNN-BiLSTM e BiLSTM, o desempenho
+    preditivo e o custo computacional.
   \end{block}
   \begin{enumerate}
-    \item Preparar os registros Normal/FA do PhysioNet/CinC 2017.
+    \item Selecionar e preparar os registros de ECG das classes Normal e FA.
     \item Implementar e treinar as quatro combinações.
     \item Medir F1 de FA e demais métricas de classificação.
     \item Comparar o efeito das funções de perda e o custo das arquiteturas.
@@ -244,7 +267,39 @@
   \small As classes “outro ritmo” e “ruidoso” não integram o recorte binário.
 \end{frame}
 
-\begin{frame}{Dados, divisão e pré-processamento}
+\begin{frame}{Base de dados: PhysioNet/CinC 2017}
+
+  \begin{itemize}
+    \item 8.528 registros de ECG no conjunto
+    de treinamento original do desafio.
+
+    \item Sinais de uma única derivação,
+    amostrados a 300 Hz.
+
+    \item Seleção das classes Normal e FA.
+  \end{itemize}
+
+  \begin{center}
+    \begin{tabular}{lc}
+      \toprule
+      \textbf{Classe} & \textbf{Registros} \\
+      \midrule
+      Normal & 5.154 \\
+      Fibrilação atrial & 771 \\
+      \midrule
+      Total selecionado & 5.925 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \small Proporção aproximada de 6,7 registros
+  normais para cada registro com FA.
+
+  \vfill
+  {\scriptsize Fonte: Clifford et al. (2017).}
+\end{frame}
+
+\begin{frame}{Divisão e pré-processamento}
   \begin{itemize}
     \item \textbf{Uma derivação, 300 Hz:} cada entrada terá 30 segundos, ou \textbf{9.000 amostras}.
     \item Registros longos: recorte central. Registros curtos: preenchimento com zeros.
@@ -298,7 +353,7 @@
     \item Perda em cada arquitetura, \textbf{com teste estatístico}: E2 × E1 e E4 × E3.
     \item Etapa convolucional sob a mesma perda, \textbf{descritiva}: E1 × E3 e E2 × E4.
     \item CE sem pesos × FL com $\gamma=2$ e $\alpha_{\mathrm{FA}}=0{,}75$: mede o \textbf{efeito conjunto} da focalização e do peso de classe.
-    \item $\alpha_{\mathrm{FA}}=0{,}75$ fica entre a ausência de peso (0,5) e a frequência inversa (0,87); Lin et al. (2017) usaram 0,25 em detecção de objetos, com desbalanceamento extremo.
+    \item $\alpha_{\mathrm{FA}}=0{,}75$ fica entre a ponderação igual das classes (0,5) e a frequência inversa normalizada (0,87); Lin et al. (2017) usaram 0,25 em detecção de objetos.  
   \end{itemize}
 \end{frame}
 
@@ -309,7 +364,7 @@
     \item \textbf{Seleção do modelo:} época com maior F1 de FA na validação.
     \item \textbf{Limiar de decisão:} 0,5 fixo sobre a saída sigmoide; AUC-ROC e AUC-PR independem de limiar.
     \item \textbf{Repetições:} 8 sementes × 4 configurações = \textbf{32 treinamentos}; mesma divisão; teste reservado exclusivamente à avaliação final de cada modelo.
-    \item \textbf{Ambiente:} AMD Ryzen 5 5600; NVIDIA GeForce GTX 1650; 16 GB RAM; SSD de aproximadamente 700 GB.
+    \item \textbf{Ambiente:} AMD Ryzen 5 5600; NVIDIA GeForce GTX 1650 (4 GB de VRAM); 16 GB RAM; SSD de aproximadamente 700 GB.
   \end{itemize}
   {\scriptsize Fonte: Kingma e Ba (2015).}
 \end{frame}
@@ -317,13 +372,38 @@
 \begin{frame}{Avaliação, estatística e custo}
   \small
   \begin{itemize}
-    \item \textbf{Desempenho:} F1 de FA como métrica principal; revocação, precisão, especificidade, acurácia, AUC-ROC e AUC-PR como complementares.
-    \item \textbf{Hipóteses}, em cada arquitetura: $H_0:\mu_d\leq 0{,}02$ e $H_1:\mu_d>0{,}02$, em que $d_s=F1_{\mathrm{FL},s}-F1_{\mathrm{CE},s}$ é a diferença em cada semente.
-    \item \textbf{Teste:} t de Student pareado e unilateral, $\alpha=5\%$. Normalidade por Shapiro--Wilk; se rejeitada, Wilcoxon pareado. Hipótese corroborada só se $H_0$ for rejeitada \textbf{nas duas arquiteturas}.
-    \item \textbf{Arquitetura e interação:} descritivas (média, desvio-padrão e IC de 95\%).
-    \item \textbf{Custo:} tempo de treinamento, latência por registro e quantidade de parâmetros treináveis.
+
+    \item \textbf{Desempenho:} F1 de FA como
+    métrica principal; revocação, precisão,
+    especificidade, acurácia, AUC-ROC e AUC-PR
+    como complementares.
+
+    \item \textbf{Hipóteses}, em cada arquitetura:
+    $H_0:\mu_d\leq 0$ e $H_1:\mu_d>0$,
+    em que $d_s=F1_{\mathrm{FL},s}-F1_{\mathrm{CE},s}$
+    é a diferença em cada semente.
+
+    \item \textbf{Teste:} t de Student pareado
+    e unilateral ($\alpha=5\%$).
+    Normalidade por Shapiro--Wilk; se rejeitada,
+    Wilcoxon pareado unilateral, respeitando
+    seus pressupostos.
+
+    \item \textbf{Interpretação:} superioridade
+    média pelo teste t nas duas arquiteturas;
+    análise da magnitude e incerteza dos ganhos.
+    Wilcoxon não testa diretamente a média.
+
+    \item \textbf{Arquitetura e interação:}
+    análise descritiva.
+
+    \item \textbf{Custo:} tempo de treinamento,
+    latência por registro e quantidade de
+    parâmetros treináveis.
+
   \end{itemize}
-  {\scriptsize Fontes: Shapiro e Wilk (1965); Wilcoxon (1945).}
+  {\scriptsize Fontes: Shapiro e Wilk (1965);
+  Wilcoxon (1945).}
 \end{frame}
 
 \begin{frame}{Cronograma do TCC2: fevereiro a junho de 2027}
@@ -387,12 +467,31 @@
 
 \begin{frame}{Resultados esperados e próximos passos}
   \begin{itemize}
-    \item Estimar o efeito de Focal Loss sobre o F1 da classe FA \textbf{em cada arquitetura}.
-    \item Descrever se acrescentar a CNN traz ganho diante do tempo e dos parâmetros adicionais.
-    \item Executar as \textbf{32 rodadas} do desenho 2 × 2 e avaliar se o ganho médio supera 2 pontos percentuais nas duas arquiteturas.
-    \item Reportar as limitações do recorte binário: outros ritmos e sinais ruidosos ficam fora da avaliação.
+
+    \item Estimar o efeito da Focal Loss sobre
+    o F1 da classe FA \textbf{em cada arquitetura}.
+
+    \item Descrever se acrescentar a CNN traz
+    ganho diante do tempo e dos parâmetros
+    adicionais.
+
+    \item Executar os \textbf{32 treinamentos}
+    do desenho 2 $\times$ 2 e investigar a
+    superioridade da Focal Loss nas duas
+    arquiteturas.
+
+    \item Analisar a significância estatística
+    e a relevância prática dos resultados.
+
+    \item Reportar as limitações do recorte
+    binário: outros ritmos e sinais ruidosos
+    ficam fora da avaliação.
+
   \end{itemize}
-  \small Os resultados são esperados: a proposta ainda não apresenta modelos treinados nem ganhos comprovados.
+
+  \small Os resultados são esperados: a proposta
+  ainda não apresenta modelos treinados nem
+  ganhos comprovados.
 \end{frame}
 
 {\setbeamertemplate{footline}{}

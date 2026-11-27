@@ -322,24 +322,23 @@ perda sob condições experimentais controladas constitui uma forma de investiga
 \section{Problema de pesquisa e hipótese}
 \label{sec:problema_hipotese}
 
-Diante do desbalanceamento entre as classes de ritmo normal e fibrilação atrial, este trabalho busca responder à 
-seguinte pergunta de pesquisa: em que medida a utilização da função de perda Focal Loss, em comparação à Cross-Entropy, 
-influencia o desempenho na classificação de fibrilação atrial em sinais de eletrocardiograma, considerando as arquiteturas 
-CNN-BiLSTM e BiLSTM?
+Diante do desbalanceamento entre as classes de ritmo
+normal e fibrilação atrial, este trabalho busca responder
+à seguinte pergunta de pesquisa: de que forma a
+utilização da função de perda Focal Loss, em comparação
+à Cross-Entropy, influencia o desempenho das redes
+neurais na classificação de fibrilação atrial em
+sinais de eletrocardiograma?
 
 Parte-se da hipótese de que a utilização da Focal Loss
-proporciona uma melhoria média superior a dois pontos
-percentuais no F1-score da classe fibrilação atrial
-em comparação à Cross-Entropy, tanto na arquitetura
-CNN-BiLSTM quanto na BiLSTM. O limiar de dois pontos
-percentuais é proposto como critério de relevância
-previamente estabelecido para a comparação.
+proporciona um F1-score médio da classe fibrilação
+atrial superior ao obtido com a Cross-Entropy, tanto
+na arquitetura CNN-BiLSTM quanto na BiLSTM.
 
 A hipótese será investigada por meio de experimentos
 controlados e comparações estatísticas pareadas entre
 as funções de perda, adotando-se um nível de
 significância de 5\%.
-
 
 
 
@@ -421,9 +420,12 @@ Os objetivos a seguir delimitam o escopo prático e analítico do estudo, orient
 
 \subsection{Objetivo principal}
 
-Analisar experimentalmente e comparar as arquiteturas de aprendizado profundo CNN-BiLSTM e BiLSTM para a 
-classificação de fibrilação atrial em sinais de eletrocardiograma, avaliando o impacto das funções de perda 
-Cross-Entropy e Focal Loss por meio de métricas de desempenho e custo computacional.
+Investigar experimentalmente o impacto das funções
+de perda Cross-Entropy e Focal Loss na classificação
+de fibrilação atrial em sinais de eletrocardiograma,
+considerando as arquiteturas de aprendizado profundo
+CNN-BiLSTM e BiLSTM e avaliando o desempenho
+preditivo e o custo computacional das abordagens.
 
 
 \subsection{Objetivos secundários}
@@ -804,10 +806,10 @@ contribuição dos numerosos exemplos negativos fáceis.
 No recorte deste trabalho, o desbalanceamento é moderado
 (aproximadamente 6,7 registros normais para cada registro
 com FA) e o objetivo é priorizar a classe FA. Por isso,
-adota-se $\alpha_{\mathrm{FA}} = 0{,}75$, valor
-intermediário entre a ausência de ponderação
-($\alpha = 0{,}5$) e a ponderação pela frequência inversa
-das classes ($5.154/5.925 \approx 0{,}87$). Esses valores
+adota-se $\alpha_{\mathrm{FA}} = 0{,}75$, valor intermediário entre a ponderação igual das
+classes ($\alpha = 0{,}5$) e a ponderação pela
+frequência inversa normalizada das classes
+($5.154/5.925 \approx 0{,}87$). Esses valores
 serão fixados antes dos experimentos e não serão
 ajustados com base nos resultados.
 
@@ -869,37 +871,48 @@ os F1-scores da classe FA no conjunto de teste,
 obtidos com Focal Loss e com Cross-Entropy. O
 pareamento se justifica pelo uso da mesma semente e
 da mesma divisão dos dados nas duas funções de perda.
-Sendo $\mu_d$ a diferença média, as hipóteses
-estatísticas serão:
+
+Sendo $\mu_d$ a média das diferenças pareadas,
+as hipóteses estatísticas serão:
+
 \begin{equation}
-    H_0: \mu_d \leq 0{,}02
+    H_0: \mu_d \leq 0
     \qquad \text{versus} \qquad
-    H_1: \mu_d > 0{,}02,
+    H_1: \mu_d > 0,
     \label{eq:hipoteses}
 \end{equation}
-em que 0,02 corresponde ao limiar de relevância de
-dois pontos percentuais definido na
-Seção~\ref{sec:problema_hipotese}.
+
+em que a hipótese alternativa representa a
+superioridade média da Focal Loss em relação à
+Cross-Entropy no F1-score da classe FA.
 
 Em cada arquitetura, as hipóteses serão avaliadas
 pelo teste t de Student pareado e unilateral, ao
 nível de significância de 5\%, aplicado às oito
-diferenças deslocadas $d_s - 0{,}02$. Antes, a
-normalidade das diferenças será verificada pelo teste
-de Shapiro--Wilk \cite{Shapiro1965}, também a 5\%.
-Caso a normalidade seja rejeitada, será utilizado o
-teste dos postos sinalizados de Wilcoxon, pareado e
-unilateral \cite{Wilcoxon1945}, aplicado às mesmas
-diferenças deslocadas. Com oito pares, o menor
-valor-p exato desse teste é $1/256 \approx 0{,}004$,
-o que permite rejeitar $H_0$ ao nível adotado.
+diferenças pareadas. A normalidade das diferenças
+será investigada por meio do teste de Shapiro--Wilk
+\cite{Shapiro1965}, também ao nível de
+significância de 5\%.
+
+Caso a normalidade seja rejeitada, será considerado
+o teste dos postos sinalizados de Wilcoxon, pareado
+e unilateral \cite{Wilcoxon1945}, desde que seus
+pressupostos sejam atendidos. Nesse caso, os
+resultados serão interpretados como evidência de
+um deslocamento positivo na distribuição das
+diferenças, e não diretamente como um teste
+sobre a média.
 
 A hipótese de pesquisa será considerada corroborada
-apenas se $H_0$ for rejeitada nas duas arquiteturas.
-Como a conclusão exige a rejeição nos dois testes,
-e não em pelo menos um deles, o nível de significância
-global permanece limitado a 5\% sem correção para
-comparações múltiplas.
+quanto à superioridade média caso a hipótese nula
+do teste t seja rejeitada nas duas arquiteturas.
+Quando utilizado o teste de Wilcoxon, a conclusão
+respeitará a natureza e a interpretação desse teste.
+
+Além da significância estatística, serão analisadas
+a magnitude das diferenças observadas e sua
+incerteza, permitindo discutir a relevância prática
+dos resultados.
 
 O efeito da arquitetura e a interação entre
 arquitetura e função de perda serão analisados de
@@ -945,16 +958,24 @@ realizadas nesse mesmo ambiente computacional para as quatro
 configurações experimentais, buscando assegurar condições
 equivalentes de avaliação.
 
-Por fim, os resultados das quatro configurações serão comparados
-considerando as médias e os desvios-padrão das métricas obtidas
-nas repetições experimentais. O efeito da função de perda será
-submetido aos testes de hipótese descritos na
-Subseção~\ref{subsec:config_experimentos}, enquanto as diferenças
-entre as arquiteturas serão analisadas de forma descritiva.
+Por fim, os resultados das quatro configurações serão
+comparados considerando as médias e os desvios-padrão
+das métricas obtidas nas repetições experimentais.
+O efeito da função de perda será submetido aos
+testes estatísticos descritos na
+Subseção~\ref{subsec:config_experimentos}, enquanto
+as diferenças entre as arquiteturas serão analisadas
+de forma descritiva.
 
-Essa avaliação permitirá identificar a configuração que apresenta
-o melhor equilíbrio entre desempenho na classificação da
-fibrilação atrial e custo computacional.
+Além da significância estatística, serão consideradas
+a magnitude das diferenças de desempenho e a sua
+incerteza, permitindo avaliar a relevância prática
+dos resultados.
+
+Essa avaliação permitirá discutir as relações entre
+o desempenho na classificação da fibrilação atrial
+e o custo computacional das configurações
+experimentais.
 %Descreva detalhadamente a solução que será desenvolvida para resolver o problema apresentado na introdução. A descrição deve incluir:
 
 %\begin{itemize}
